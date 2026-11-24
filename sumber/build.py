@@ -12,9 +12,10 @@ def rd(n):
 defaults = rd("defaults.json")
 seed = rd("seed_products.json")
 
-# ---- Code.gs
-code = rd("Code.template.gs").replace("/*__DEFAULTS__*/", defaults).replace("/*__SEED__*/", seed)
-open(os.path.join(OUT, "Code.gs"), "w", encoding="utf-8").write(code)
+# ---- Code.gs (peninggalan Apps Script lama; dilewati bila template tidak ada)
+if os.path.exists(os.path.join(HERE, "Code.template.gs")):
+    code = rd("Code.template.gs").replace("/*__DEFAULTS__*/", defaults).replace("/*__SEED__*/", seed)
+    open(os.path.join(OUT, "Code.gs"), "w", encoding="utf-8").write(code)
 
 # ---- Supabase
 mini = lambda t: json.dumps(json.loads(t), ensure_ascii=False, separators=(",", ":"))

@@ -273,7 +273,7 @@ function addrFields(f) {
 
 function doneHtml() {
   var o = St.last, S = St.S, wa = normWa(S.whatsapp);
-  var txt = 'Halo ' + S.storeName + ', saya sudah memesan.\nNo. pesanan: ' + o.id + '\nNama: ' + o.name + '\nPesanan: ' + o.summary + '\nTotal: ' + rp(o.total) + '\nPenerimaan: ' + o.method + (o.zone ? ' - ' + o.zone : '') + (o.date ? '\nJadwal: ' + dateLabel(o.date) + ' ' + o.slot : '') + '\nPembayaran: ' + o.payment;
+  var txt = waOrderText(o, S);
   return '<div style="text-align:center;font-size:44px">✅</div><h3 style="text-align:center">Pesanan berhasil dibuat</h3><p class="muted" style="text-align:center;margin:6px 0 12px">Nomor pesanan Anda <span class="oid">' + esc(o.id) + '</span></p>' +
     (o.duplicate ? '<div class="notice" style="margin-bottom:10px">Pesanan yang sama sudah tercatat, jadi tidak dibuat dua kali.</div>' : '') +
     '<div class="ord-card"><div class="row"><b>Total</b><b class="num">' + rp(o.total) + '</b></div><div class="muted" style="margin-top:6px">' + esc(o.summary) + '</div></div>' +

@@ -96,7 +96,7 @@ function acApply() {
 function acStoreUrl() { return location.origin + location.pathname; }
 function acM5() {
   var u = acStoreUrl();
-  var wa = 'Halo Bunda/Ayah 👋\nSegarKite buka pre-order besok!\n🐟 Ikan bersih tanpa amis\n🍗 Ayam ungkep & frozen siap masak\n🌿 Sayur segar kemas daun pisang\n\nOrder sebelum pukul 20.00 WIB untuk kloter pagi.\nPesan di sini: ' + u + '\nTanya-tanya: wa.me/628980386681';
+  var wa = 'Halo Bunda/Ayah 👋\n*SegarKite buka pre-order besok!* 🛒\n\n────────────────\n*Menu andalan*\n🐟 Ikan bersih tanpa amis\n🍗 Ayam ungkep & frozen siap masak\n🌿 Sayur segar kemas daun pisang\n\n────────────────\n⏰ *Batas pesan:* pukul 20.00 WIB (kloter pagi)\n🛵 *Antar:* kurir serentak dengan coolbox\n\n🔗 *Pesan di sini:*\n' + u + '\n\n💬 Tanya-tanya: wa.me/628980386681\n\n_SegarKite - Fresh & Frozen Food_';
   var ig = 'Menu hari ini siap diantar dingin ke rumah ❄️🌿\nIkan sudah disiangi, ayam sudah diungkep, sayur dibungkus daun pisang.\nPre-order sampai 20.00 WIB, link di bio.\n#segarkite #pontianak #sayursegar #frozenfood #masakpraktis #kuburaya';
   return '<div class="set-sec">' + acHead('Modul 05', 'Promosi WA, Instagram & rekap data', 'Pakai pesan siap salin di bawah, lalu ganti isi menu sesuai stok hari itu.') +
     '<h4>Template broadcast WhatsApp</h4><textarea class="ac-copy" id="ac-wa" readonly rows="8">' + esc(wa) + '</textarea><button class="btn btn-ghost btn-sm" data-a="acCopy" data-id="ac-wa">Salin teks</button>' +

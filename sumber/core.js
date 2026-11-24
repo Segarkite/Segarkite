@@ -17,6 +17,72 @@ function normWa(n) { var d = String(n || '').replace(/\D/g, ''); if (d.indexOf('
 function todayWIB() { return new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10); }
 function addDays(ds, n) { var p = ds.split('-').map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2] + n)).toISOString().slice(0, 10); }
 function dateLabel(ds) { return new Date(ds + 'T00:00:00Z').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', timeZone: 'UTC' }); }
+/* ===== Pesan WhatsApp terstruktur (tebal = *teks*, miring = _teks_) ===== */
+var WA_LINE = '────────────────';
+function waSlotTime(S, name) {
+  try { var sl = (S.delivery.scheduled.slots || []).filter(function (x) { return x.name === name; })[0]; return sl && sl.time ? sl.time : ''; } catch (e) { return ''; }
+}
+function waItems(o) {
+  if (!o.items || !o.items.length) return o.summary || '';
+  return o.items.map(function (i, n) {
+    var l = (n + 1) + '. *' + i.name + '*' + (i.tebus ? ' _(tebus murah)_' : '') + '\n    ' + i.qty + ' x ' + rp(i.price) + ' = ' + rp(i.price * i.qty);
+    if (i.prep) l += '\n    • Potongan: ' + i.prep;
+    if (i.pack) l += '\n    • Kemasan: ' + i.pack;
+    if (i.note) l += '\n    • Catatan: ' + i.note;
+    return l;
+  }).join('\n');
+}
+function waDelivery(o, S) {
+  var Dl = S.delivery || {}, lab = o.date ? 'Rute' : (Dl.courier && o.method === Dl.courier.label ? 'Kurir' : (Dl.pickup && o.method === Dl.pickup.label ? 'Lokasi' : 'Detail'));
+  var l = ['📍 *Penerimaan*', '• Cara: ' + o.method];
+  if (o.zone) l.push('• ' + lab + ': ' + o.zone);
+  if (o.date) { var tm = waSlotTime(S, o.slot); l.push('• Jadwal: ' + dateLabel(o.date) + ', ' + o.slot + (tm ? ' (' + tm + ')' : '')); }
+  if (o.address) l.push('• Alamat: ' + o.address);
+  if (o.maps) l.push('• Peta: ' + o.maps);
+  return l.join('\n');
+}
+function waPayment(o, S) {
+  var Dl = S.delivery || {}, l = ['💰 *Pembayaran*', 'Subtotal: ' + rp(o.subtotal)];
+  if (o.date) l.push('Ongkir: ' + (o.shipping ? rp(o.shipping) : 'Gratis'));
+  else if (Dl.courier && o.method === Dl.courier.label) l.push('Ongkir: dibayar langsung ke kurir');
+  if (o.discount) l.push('Diskon' + (o.voucher ? ' (' + o.voucher + ')' : '') + ': -' + rp(o.discount));
+  l.push('*TOTAL: ' + rp(o.total) + '*', 'Metode: ' + o.payment);
+  return l.join('\n');
+}
+/* Dikirim pelanggan ke WhatsApp toko setelah memesan */
+function waOrderText(o, S) {
+  var l = ['*PESANAN BARU* 🛒', '_' + S.storeName + '_', '',
+    'No. pesanan: *' + o.id + '*', 'Nama: ' + o.name, 'WhatsApp: ' + o.wa, '',
+    WA_LINE, '🧺 *Rincian Pesanan*', waItems(o), '',
+    WA_LINE, waDelivery(o, S), '',
+    WA_LINE, waPayment(o, S)];
+  if (o.note) l.push('', '📝 *Catatan:* ' + o.note);
+  l.push('', 'Mohon konfirmasi pesanan dan info pembayarannya. Terima kasih 🙏');
+  return l.join('\n');
+}
+/* Dikirim admin ke WhatsApp pelanggan saat status berubah */
+function waStatusText(o, S) {
+  var Dl = S.delivery || {}, pickup = Dl.pickup && o.method === Dl.pickup.label;
+  var info = {
+    'Baru': ['✅', 'Pesanan Anda sudah kami terima dan akan segera kami proses.'],
+    'Dikonfirmasi': ['👍', 'Pesanan Anda sudah kami konfirmasi.'],
+    'Dikemas': ['📦', 'Pesanan Anda sedang kami siapkan dan kemas.'],
+    'Diantar': pickup ? ['🏪', 'Pesanan Anda sudah siap diambil. Tunjukkan nomor pesanan saat mengambil.'] : ['🛵', 'Pesanan Anda sedang dalam perjalanan.'],
+    'Selesai': ['🎉', 'Pesanan Anda sudah selesai. Terima kasih sudah berbelanja!'],
+    'Dibatalkan': ['❌', 'Pesanan ini dibatalkan. Jika ada pertanyaan, silakan balas pesan ini.']
+  }[o.status] || ['ℹ️', 'Status pesanan Anda diperbarui.'];
+  var l = ['Halo *' + o.name + '* 👋', 'Update pesanan Anda di *' + S.storeName + '*', '',
+    'No. pesanan: *' + o.id + '*', 'Status: ' + info[0] + ' *' + o.status + '*', '', info[1]];
+  if (o.status === 'Baru' || o.status === 'Dikonfirmasi') {
+    l.push('', /cod|tunai/i.test(o.payment) ? 'Mohon siapkan pembayaran tunai *' + rp(o.total) + '* saat pesanan diterima.' : 'Mohon lakukan pembayaran *' + rp(o.total) + '* via ' + o.payment + ', lalu kirim bukti pembayaran di chat ini.');
+  }
+  l.push('', WA_LINE, '🧺 *Ringkasan Pesanan*');
+  (o.items || []).forEach(function (i) { l.push('• ' + i.qty + 'x ' + i.name + (i.prep || i.pack ? ' (' + [i.prep, i.pack].filter(Boolean).join(' | ') + ')' : '')); });
+  l.push('*Total: ' + rp(o.total) + '*', 'Pembayaran: ' + o.payment);
+  if (o.date) l.push('Jadwal: ' + dateLabel(o.date) + ', ' + o.slot);
+  l.push('', 'Terima kasih 🙏', '_' + S.storeName + '_');
+  return l.join('\n');
+}
 function cutoffAt(ds, sl) { var p = ds.split('-').map(Number); return Date.UTC(p[0], p[1] - 1, p[2] - nz(sl.daysBefore), nz(sl.cutoffHour, 12) - 7); }
 function cutoffText(sl) { var h = ('0' + nz(sl.cutoffHour, 12)).slice(-2) + '.00'; var d = nz(sl.daysBefore); return d === 0 ? 'jam ' + h + ' di hari yang sama' : d === 1 ? 'jam ' + h + ' hari sebelumnya' : 'jam ' + h + ', ' + d + ' hari sebelumnya'; }
 function toast(msg, bad) { var t = $('toast'); t.textContent = msg; t.className = 'toast' + (bad ? ' bad' : ''); t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { t.hidden = true; }, 3400); }

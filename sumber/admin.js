@@ -70,7 +70,7 @@ function tabPesanan() {
       '<div><b>Subtotal</b> ' + rp(o.subtotal) + ' · <b>Ongkir</b> ' + rp(o.shipping) + (o.discount ? ' · <b>Diskon</b> -' + rp(o.discount) + ' (' + esc(o.voucher) + ')' : '') + ' · <b>Total</b> ' + rp(o.total) + '</div><div><b>Bayar:</b> ' + esc(o.payment) + (o.note ? ' · <b>Catatan:</b> ' + esc(o.note) : '') + '</div>' +
       '<div><b>Estimasi margin:</b> <span class="mg ' + (o.margin < 0 ? 'neg' : '') + '">' + rp(o.margin) + '</span></div>' +
       '<div class="row"><label class="lbl" style="margin:0" for="st-' + esc(o.id) + '">Status</label><select class="inp" style="width:auto" id="st-' + esc(o.id) + '" data-a="oStatus" data-id="' + esc(o.id) + '">' + STATUSES.map(function (s) { return '<option' + (s === o.status ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select>' +
-      '<a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://wa.me/' + wa + '?text=' + encodeURIComponent('Halo ' + o.name + ', pesanan ' + o.id + ' di ' + AD.S.storeName + ' berstatus: ' + o.status + '.') + '">Kabari via WA</a></div></div></details>';
+      '<a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(waStatusText(o, AD.S)) + '">Kabari via WA</a></div></div></details>';
   }).join('');
   return h;
 }

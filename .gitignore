@@ -1,3 +1,4 @@
 dist/
 sumber/defaults.json
 sumber/seed_products.json
+__pycache__/

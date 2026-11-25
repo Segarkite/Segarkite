@@ -49,7 +49,7 @@ function loadStore() {
 }
 
 /* ----- kerangka halaman ----- */
-function isSvc(p) { return /^(Jasa |Katering)/.test(p.cat || ''); }
+function isSvc(p) { return /^Katering/.test(p.cat || ''); }
 function renderStore() {
   var S = St.S, v = $('view-store'), wa = normWa(S.whatsapp);
   var cats = [{ name: 'Semua', emoji: '🛍️' }].concat(S.categories || []);

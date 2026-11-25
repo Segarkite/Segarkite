@@ -418,7 +418,7 @@ table.t input { width: 100%; min-width: 84px; padding: 6px 8px; border: 1px soli
 .admin-link:hover { background: rgba(255, 255, 255, .12); }
 @media (max-width: 640px) { .hd-acts .admin-btn { min-width: 44px; padding: 6px 8px; } }
 
-.svcs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.svcs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .svc{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px;border:1.5px solid var(--line,#e3e8df);border-radius:14px;background:#fff;cursor:pointer;font:inherit;color:inherit}
 .svc:hover{border-color:var(--g,#2e7d32);box-shadow:0 4px 14px rgba(0,0,0,.06)}
 .svc .si{font-size:26px}.svc b{font-size:15px}.svc span:last-child{font-size:12.5px;color:#5b6657;line-height:1.4}
@@ -509,14 +509,6 @@ var DEFAULT_S = {
   {
    "name": "Katering & Lauk Jadi",
    "emoji": "🍱"
-  },
-  {
-   "name": "Jasa Olah Bahan",
-   "emoji": "🔪"
-  },
-  {
-   "name": "Jasa Antar",
-   "emoji": "🛵"
   }
  ],
  "flashTitle": "FLASH SALE SUBUH",
@@ -746,97 +738,84 @@ var DEFAULT_S = {
    "recipes": [
     {
      "id": "R01",
-     "name": "Jasa Fillet & Bersihkan Ikan (contoh)",
-     "type": "olah",
-     "unit": "kg",
+     "name": "Ikan Kakap Fresh 500 gr (contoh)",
+     "type": "produk",
+     "unit": "pack",
      "yield": 1,
-     "materials": [],
+     "materials": [
+      {
+       "name": "Ikan kakap utuh Flamboyan",
+       "buyPrice": 70000,
+       "buyQty": 1000,
+       "useQty": 800,
+       "shrink": 35
+      }
+     ],
+     "laborMin": 15,
+     "workers": 1,
+     "extras": [
+      {
+       "name": "Es batu & air",
+       "kind": "overhead",
+       "amount": 1000
+      },
+      {
+       "name": "Plastik vakum",
+       "kind": "kemas",
+       "amount": 1500
+      },
+      {
+       "name": "Label",
+       "kind": "kemas",
+       "amount": 300
+      }
+     ],
+     "ohHour": "",
+     "margin": 30,
+     "price": 0,
+     "productId": ""
+    },
+    {
+     "id": "R02",
+     "name": "Ikan Kakap Frozen 500 gr dari sisa fresh (contoh)",
+     "type": "produk",
+     "unit": "pack",
+     "yield": 1,
+     "materials": [
+      {
+       "name": "Ikan kakap utuh Flamboyan",
+       "buyPrice": 70000,
+       "buyQty": 1000,
+       "useQty": 800,
+       "shrink": 35
+      }
+     ],
      "laborMin": 25,
      "workers": 1,
      "extras": [
       {
-       "name": "Plastik vakum",
-       "kind": "kemas",
+       "name": "Listrik freezer (alokasi)",
+       "kind": "overhead",
        "amount": 1000
       },
       {
-       "name": "Es batu & air",
-       "kind": "overhead",
-       "amount": 1500
-      }
-     ],
-     "ohHour": "",
-     "margin": 40,
-     "price": 0,
-     "productId": "P21"
-    },
-    {
-     "id": "R02",
-     "name": "Jasa Potong & Ungkep Ayam (contoh)",
-     "type": "olah",
-     "unit": "ekor",
-     "yield": 1,
-     "materials": [
-      {
-       "name": "Bumbu ungkep halus",
-       "buyPrice": 30000,
-       "buyQty": 1000,
-       "useQty": 150,
-       "shrink": 0
-      }
-     ],
-     "laborMin": 30,
-     "workers": 1,
-     "extras": [
-      {
-       "name": "Minyak & gas",
-       "kind": "overhead",
-       "amount": 2500
-      },
-      {
-       "name": "Plastik & label",
+       "name": "Plastik vakum",
        "kind": "kemas",
        "amount": 1500
+      },
+      {
+       "name": "Label",
+       "kind": "kemas",
+       "amount": 300
       }
      ],
      "ohHour": "",
      "margin": 35,
      "price": 0,
-     "productId": "P22"
+     "productId": ""
     },
     {
      "id": "R03",
-     "name": "Jasa Vakum & Bekukan (contoh)",
-     "type": "olah",
-     "unit": "kemasan",
-     "yield": 10,
-     "materials": [],
-     "laborMin": 20,
-     "workers": 1,
-     "extras": [
-      {
-       "name": "Plastik vakum 10 pcs",
-       "kind": "kemas",
-       "amount": 10000
-      },
-      {
-       "name": "Label 10 pcs",
-       "kind": "kemas",
-       "amount": 3000
-      },
-      {
-       "name": "Listrik freezer",
-       "kind": "overhead",
-       "amount": 3000
-      }
-     ],
-     "ohHour": "",
-     "margin": 40,
-     "price": 0,
-     "productId": "P23"
-    },
-    {
-     "id": "R04",
      "name": "Nasi Box Event 20 box (contoh)",
      "type": "event",
      "unit": "box",
@@ -893,10 +872,10 @@ var DEFAULT_S = {
      "ohHour": "",
      "margin": 30,
      "price": 0,
-     "productId": "P24"
+     "productId": "P21"
     },
     {
-     "id": "R05",
+     "id": "R04",
      "name": "Prasmanan Event 30 pax (contoh)",
      "type": "event",
      "unit": "pax",
@@ -958,33 +937,12 @@ var DEFAULT_S = {
      "ohHour": "",
      "margin": 35,
      "price": 0,
-     "productId": "P25"
+     "productId": "P22"
     },
     {
-     "id": "R06",
-     "name": "Jasa Antar Khusus Dalam Kota (contoh)",
-     "type": "antar",
-     "unit": "antaran",
-     "yield": 1,
-     "materials": [],
-     "laborMin": 40,
-     "workers": 1,
-     "extras": [
-      {
-       "name": "BBM & penyusutan motor",
-       "kind": "transport",
-       "amount": 6000
-      }
-     ],
-     "ohHour": 0,
-     "margin": 40,
-     "price": 0,
-     "productId": "P27"
-    },
-    {
-     "id": "R07",
+     "id": "R05",
      "name": "Lauk Jadi Request 10 porsi (contoh)",
-     "type": "produk",
+     "type": "katering",
      "unit": "porsi",
      "yield": 10,
      "materials": [
@@ -1027,7 +985,7 @@ var DEFAULT_S = {
      "ohHour": "",
      "margin": 35,
      "price": 0,
-     "productId": "P26"
+     "productId": "P23"
     }
    ]
   }
@@ -1052,12 +1010,6 @@ var DEFAULT_S = {
     "title": "Katering & Lauk Jadi",
     "text": "Menu SegarKite atau request sendiri, nasi box dan prasmanan event.",
     "cat": "Katering & Lauk Jadi"
-   },
-   {
-    "icon": "🔪",
-    "title": "Jasa Olah & Antar",
-    "text": "Fillet, ungkep, vakum-bekukan, dan antar khusus ke rumah/acara.",
-    "cat": "Jasa Olah Bahan"
    }
   ]
  }
@@ -1405,48 +1357,6 @@ var SEED = [
  },
  {
   "id": "P21",
-  "name": "Jasa Fillet & Bersihkan Ikan (per kg)",
-  "cat": "Jasa Olah Bahan",
-  "price": 19000,
-  "oldPrice": 0,
-  "hpp": 10250,
-  "kemas": 1000,
-  "emoji": "🔪",
-  "badge": "Jasa olah",
-  "desc": "Ikan dari Flamboyan atau milik Anda difillet, dibuang sisik, insang, dan perut, lalu dikemas vakum.",
-  "prep": "Fillet tanpa tulang\nPotong steak\nBelah punggung siap bakar",
-  "packs": ""
- },
- {
-  "id": "P22",
-  "name": "Jasa Potong & Ungkep Ayam (per ekor)",
-  "cat": "Jasa Olah Bahan",
-  "price": 29500,
-  "oldPrice": 0,
-  "hpp": 17500,
-  "kemas": 1500,
-  "emoji": "🍗",
-  "badge": "Jasa olah",
-  "desc": "Ayam dipotong sesuai selera lalu diungkep bumbu kuning, siap goreng.",
-  "prep": "Potong 8\nPotong 12\nUngkep bumbu kuning",
-  "packs": ""
- },
- {
-  "id": "P23",
-  "name": "Jasa Vakum & Bekukan (per kemasan)",
-  "cat": "Jasa Olah Bahan",
-  "price": 4000,
-  "oldPrice": 0,
-  "hpp": 1000,
-  "kemas": 1300,
-  "emoji": "❄️",
-  "badge": "Jasa olah",
-  "desc": "Bahan segar dari belanja Anda dikemas vakum, diberi label tanggal, dan dibekukan -18°C.",
-  "prep": "",
-  "packs": ""
- },
- {
-  "id": "P24",
   "name": "Nasi Box Katering Event (per box, min. 20)",
   "cat": "Katering & Lauk Jadi",
   "price": 35500,
@@ -1460,7 +1370,7 @@ var SEED = [
   "packs": ""
  },
  {
-  "id": "P25",
+  "id": "P22",
   "name": "Paket Prasmanan Event (per pax, min. 30)",
   "cat": "Katering & Lauk Jadi",
   "price": 55000,
@@ -1474,7 +1384,7 @@ var SEED = [
   "packs": ""
  },
  {
-  "id": "P26",
+  "id": "P23",
   "name": "Lauk Jadi Request Pelanggan (per porsi)",
   "cat": "Katering & Lauk Jadi",
   "price": 20500,
@@ -1484,20 +1394,6 @@ var SEED = [
   "emoji": "🍛",
   "badge": "Request menu",
   "desc": "Pilih lauk sendiri (ayam, ikan, daging, sayur). Harga final dikonfirmasi lewat WhatsApp setelah menu dipastikan.",
-  "prep": "",
-  "packs": ""
- },
- {
-  "id": "P27",
-  "name": "Jasa Antar Khusus Dalam Kota (per antaran)",
-  "cat": "Jasa Antar",
-  "price": 27000,
-  "oldPrice": 0,
-  "hpp": 10000,
-  "kemas": 6000,
-  "emoji": "🛵",
-  "badge": "Jasa antar",
-  "desc": "Antar belanjaan atau katering di luar jadwal kurir serentak. Jam dan titik antar dikonfirmasi lewat WhatsApp.",
   "prep": "",
   "packs": ""
  }
@@ -1830,7 +1726,7 @@ function loadStore() {
 }
 
 /* ----- kerangka halaman ----- */
-function isSvc(p) { return /^(Jasa |Katering)/.test(p.cat || ''); }
+function isSvc(p) { return /^Katering/.test(p.cat || ''); }
 function renderStore() {
   var S = St.S, v = $('view-store'), wa = normWa(S.whatsapp);
   var cats = [{ name: 'Semua', emoji: '🛍️' }].concat(S.categories || []);
@@ -2708,8 +2604,8 @@ function acAction(a, el) {
   return false;
 }
 
-/* ===== Kalkulator HPP rinci (produk, jasa olah, katering event, jasa antar) ===== */
-var HPP_TYPES = [['produk', 'Produk / lauk jadi'], ['olah', 'Jasa olah bahan'], ['event', 'Katering event'], ['antar', 'Jasa antar']];
+/* ===== Kalkulator HPP rinci (produk fresh, frozen, lauk jadi, katering event) ===== */
+var HPP_TYPES = [['produk', 'Produk fresh / frozen'], ['katering', 'Lauk jadi / menu katering'], ['event', 'Katering event']];
 var HPP_EXTRA = [['overhead', 'Overhead (gas, listrik, minyak, sewa alat)'], ['kemas', 'Kemasan & label'], ['transport', 'Transport / BBM']];
 AD.hppSel = 0;
 
@@ -2746,7 +2642,7 @@ function tabHpp() {
   var i = AD.hppSel, rc = rs[i], P = 'finance.hpp.recipes.' + i, prods = AD.data.products;
   h += '<div class="set-sec"><h3>Rincian: ' + esc(rc.name || 'Tanpa nama') + '</h3>';
   h += '<div class="two-f">' + fld('Nama resep / layanan', P + '.name') + '<div class="field"><label for="hp_type">Jenis</label><select id="hp_type" class="inp" data-p="' + P + '.type">' + HPP_TYPES.map(function (t) { return '<option value="' + t[0] + '"' + (rc.type === t[0] ? ' selected' : '') + '>' + t[1] + '</option>'; }).join('') + '</select></div>' +
-    fld('Satuan jual (mis. kg, porsi, box, pax, antaran)', P + '.unit') + fld('Hasil per batch (jumlah satuan)', P + '.yield', { num: true, hint: 'Contoh: 1 batch nasi box = 20 box.' }) + '</div>';
+    fld('Satuan jual (mis. pack, porsi, box, pax)', P + '.unit') + fld('Hasil per batch (jumlah satuan)', P + '.yield', { num: true, hint: 'Contoh: 1 batch nasi box = 20 box.' }) + '</div>';
   h += '<h4 style="margin:14px 0 4px">1. Bahan baku</h4><p class="hint">Harga beli dan isi kemasan beli (gram/ml/butir), jumlah yang dipakai per batch, dan susut (kulit, tulang, tumpah). Biaya efektif = harga per satuan × dipakai ÷ (1 − susut).</p>' +
     rowsEditor(P + '.materials', [{ k: 'name', l: 'Bahan' }, { k: 'buyPrice', l: 'Harga beli (Rp)', t: 'n' }, { k: 'buyQty', l: 'Isi beli (g/ml/pcs)', t: 'n' }, { k: 'useQty', l: 'Dipakai per batch', t: 'n' }, { k: 'shrink', l: 'Susut (%)', t: 'n' }]);
   h += '<h4 style="margin:14px 0 4px">2. Tenaga kerja</h4><div class="two-f">' + numF('Lama kerja per batch (menit)', P + '.laborMin') + numF('Jumlah orang', P + '.workers') + '</div>';

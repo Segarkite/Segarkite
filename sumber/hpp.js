@@ -1,5 +1,5 @@
-/* ===== Kalkulator HPP rinci (produk, jasa olah, katering event, jasa antar) ===== */
-var HPP_TYPES = [['produk', 'Produk / lauk jadi'], ['olah', 'Jasa olah bahan'], ['event', 'Katering event'], ['antar', 'Jasa antar']];
+/* ===== Kalkulator HPP rinci (produk fresh, frozen, lauk jadi, katering event) ===== */
+var HPP_TYPES = [['produk', 'Produk fresh / frozen'], ['katering', 'Lauk jadi / menu katering'], ['event', 'Katering event']];
 var HPP_EXTRA = [['overhead', 'Overhead (gas, listrik, minyak, sewa alat)'], ['kemas', 'Kemasan & label'], ['transport', 'Transport / BBM']];
 AD.hppSel = 0;
 
@@ -36,7 +36,7 @@ function tabHpp() {
   var i = AD.hppSel, rc = rs[i], P = 'finance.hpp.recipes.' + i, prods = AD.data.products;
   h += '<div class="set-sec"><h3>Rincian: ' + esc(rc.name || 'Tanpa nama') + '</h3>';
   h += '<div class="two-f">' + fld('Nama resep / layanan', P + '.name') + '<div class="field"><label for="hp_type">Jenis</label><select id="hp_type" class="inp" data-p="' + P + '.type">' + HPP_TYPES.map(function (t) { return '<option value="' + t[0] + '"' + (rc.type === t[0] ? ' selected' : '') + '>' + t[1] + '</option>'; }).join('') + '</select></div>' +
-    fld('Satuan jual (mis. kg, porsi, box, pax, antaran)', P + '.unit') + fld('Hasil per batch (jumlah satuan)', P + '.yield', { num: true, hint: 'Contoh: 1 batch nasi box = 20 box.' }) + '</div>';
+    fld('Satuan jual (mis. pack, porsi, box, pax)', P + '.unit') + fld('Hasil per batch (jumlah satuan)', P + '.yield', { num: true, hint: 'Contoh: 1 batch nasi box = 20 box.' }) + '</div>';
   h += '<h4 style="margin:14px 0 4px">1. Bahan baku</h4><p class="hint">Harga beli dan isi kemasan beli (gram/ml/butir), jumlah yang dipakai per batch, dan susut (kulit, tulang, tumpah). Biaya efektif = harga per satuan × dipakai ÷ (1 − susut).</p>' +
     rowsEditor(P + '.materials', [{ k: 'name', l: 'Bahan' }, { k: 'buyPrice', l: 'Harga beli (Rp)', t: 'n' }, { k: 'buyQty', l: 'Isi beli (g/ml/pcs)', t: 'n' }, { k: 'useQty', l: 'Dipakai per batch', t: 'n' }, { k: 'shrink', l: 'Susut (%)', t: 'n' }]);
   h += '<h4 style="margin:14px 0 4px">2. Tenaga kerja</h4><div class="two-f">' + numF('Lama kerja per batch (menit)', P + '.laborMin') + numF('Jumlah orang', P + '.workers') + '</div>';

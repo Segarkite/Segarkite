@@ -1365,7 +1365,7 @@ var SEED = [
   "kemas": 4000,
   "emoji": "🍱",
   "badge": "Katering",
-  "desc": "Nasi, ayam, sayur, dan sambal dalam box. Pesan minimal 20 box, H-2 sebelum acara. Menu bisa diganti sesuai request.",
+  "desc": "Nasi, ayam, sayur, dan sambal dalam box. Pesan minimal 20 box, paling lambat H-1 sebelum acara. Menu bisa diganti sesuai request.",
   "prep": "",
   "packs": ""
  },
@@ -1379,7 +1379,7 @@ var SEED = [
   "kemas": 3167,
   "emoji": "🍽️",
   "badge": "Katering",
-  "desc": "Prasmanan lengkap termasuk chafing dish dan penataan. Minimal 30 pax, pesan H-3. Konfirmasi menu lewat WhatsApp.",
+  "desc": "Prasmanan lengkap termasuk chafing dish dan penataan. Minimal 30 pax, pesan paling lambat H-1. Konfirmasi menu lewat WhatsApp.",
   "prep": "",
   "packs": ""
  },
@@ -1393,7 +1393,7 @@ var SEED = [
   "kemas": 1500,
   "emoji": "🍛",
   "badge": "Request menu",
-  "desc": "Pilih lauk sendiri (ayam, ikan, daging, sayur). Harga final dikonfirmasi lewat WhatsApp setelah menu dipastikan.",
+  "desc": "Pilih lauk sendiri (ayam, ikan, daging, sayur). Pesan paling lambat H-1. Harga final dikonfirmasi lewat WhatsApp setelah menu dipastikan.",
   "prep": "",
   "packs": ""
  }
@@ -1726,6 +1726,8 @@ function loadStore() {
 }
 
 /* ----- kerangka halaman ----- */
+function hasCatering() { return cartLines().some(function (x) { return /^Katering/.test(x.p.cat || ''); }); }
+function cateringNote(f) { return '[KATERING] Dibutuhkan: ' + f.cdate.split('-').reverse().join('/') + (f.ctime ? ' jam ' + f.ctime : '') + '. '; }
 function isSvc(p) { return /^Katering/.test(p.cat || ''); }
 function renderStore() {
   var S = St.S, v = $('view-store'), wa = normWa(S.whatsapp);
@@ -1920,6 +1922,7 @@ function renderDrawer() {
 function checkoutForm(t) {
   var S = St.S, D = S.delivery, f = St.form, h = '';
   h += '<div class="box" style="margin-top:0"><h3 class="sub">Data pemesan</h3><div class="field"><label for="f-name">Nama</label><input id="f-name" data-f="name" value="' + esc(f.name || '') + '" autocomplete="name"></div><div class="field"><label for="f-wa">Nomor WhatsApp</label><input id="f-wa" data-f="wa" inputmode="tel" value="' + esc(f.wa || '') + '" autocomplete="tel" placeholder="08xxxxxxxxxx"></div></div>';
+  if (hasCatering()) h += '<div class="box"><h3 class="sub">Jadwal katering (pesan minimal H-1)</h3><p class="muted" style="margin:0 0 8px;font-size:12.5px">Pesanan katering dan lauk jadi harus dipesan paling lambat <b>sehari sebelum</b> hari dibutuhkan.</p><div class="two-f"><div class="field" style="margin:0"><label for="f-cdate">Tanggal dibutuhkan</label><input id="f-cdate" type="date" data-f="cdate" min="' + addDays(todayWIB(), 1) + '" value="' + esc(f.cdate || '') + '"></div><div class="field" style="margin:0"><label for="f-ctime">Jam diantar/diambil</label><input id="f-ctime" type="time" data-f="ctime" value="' + esc(f.ctime || '') + '"></div></div></div>';
   h += '<div class="box"><h3 class="sub">Cara menerima pesanan</h3>';
   function opt(v, title, desc) { return '<label class="opt"><input type="radio" name="method" data-f="method" value="' + v + '"' + (f.method === v ? ' checked' : '') + '><span><b>' + title + '</b><small>' + desc + '</small></span></label>'; }
   if (D.pickup.enabled) h += opt('pickup', esc(D.pickup.label), esc(D.pickup.address) + '. ' + esc(D.pickup.hours));
@@ -1927,7 +1930,7 @@ function checkoutForm(t) {
   if (D.scheduled.enabled) h += opt('scheduled', esc(D.scheduled.label), esc(D.scheduled.note));
   if (f.method === 'courier') h += '<div class="sub-panel"><div class="field" style="margin-top:0"><label for="f-courier">Pilih kurir</label><select id="f-courier" data-f="courier">' + D.courier.options.map(function (o) { return '<option' + (f.courier === o.name ? ' selected' : '') + '>' + esc(o.name) + '</option>'; }).join('') + '</select></div>' + addrFields(f) + '</div>';
   if (f.method === 'scheduled') {
-    var sc = D.scheduled, today = todayWIB(), dates = []; for (var i = 0; i <= nz(sc.daysAhead, 3); i++) dates.push(addDays(today, i));
+    var sc = D.scheduled, today = todayWIB(), dates = []; for (var i = hasCatering() ? 1 : 0; i <= Math.max(nz(sc.daysAhead, 3), hasCatering() ? 1 : 0); i++) dates.push(addDays(today, i));
     h += '<div class="sub-panel"><div class="field" style="margin-top:0"><label for="f-zone">Rute / wilayah antar</label><select id="f-zone" data-f="zone"><option value="">Pilih wilayah</option>' + sc.zones.map(function (z) { return '<option value="' + esc(z.name) + '"' + (f.zone === z.name ? ' selected' : '') + '>' + esc(z.name) + ' (' + rp(z.fee) + ')</option>'; }).join('') + '</select></div>' +
       '<div class="field"><label for="f-date">Tanggal antar</label><select id="f-date" data-f="date"><option value="">Pilih tanggal</option>' + dates.map(function (d) { return '<option value="' + d + '"' + (f.date === d ? ' selected' : '') + '>' + dateLabel(d) + '</option>'; }).join('') + '</select></div>';
     if (f.date) {
@@ -2030,6 +2033,10 @@ function validateCheckout(t) {
   if (f.method === 'scheduled') {
     if (!f.zone) return 'Pilih wilayah antar.'; if (!f.date) return 'Pilih tanggal antar.'; if (!f.slot) return 'Pilih sesi antar.';
   }
+  if (hasCatering()) {
+    if (!f.cdate) return 'Pilih tanggal katering dibutuhkan.';
+    if (f.cdate < addDays(todayWIB(), 1)) return 'Pesanan katering minimal H-1. Pilih tanggal mulai besok atau setelahnya.';
+  }
   if (!f.payment) return 'Pilih metode pembayaran.';
   if (t.vErr) return t.vErr;
   return '';
@@ -2041,7 +2048,7 @@ function submitOrder() {
   if (e) { $('f-err').textContent = e; return; }
   if (!St.key) St.key = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   St.busy = true; renderDrawer();
-  var body = { action: 'order', key: St.key, name: f.name.trim(), wa: normWa(f.wa), method: f.method, courier: f.courier || '', zone: f.zone || '', date: f.date || '', slot: f.slot || '', address: (f.address || '').trim(), maps: (f.maps || '').trim(), payment: f.payment, note: (f.note || '').trim(), voucher: t.voucher ? t.voucher.code : '', tebus: St.tebusSel.slice(), items: St.cart.map(function (l) { return { id: l.id, prep: l.prep, pack: l.pack, qty: l.qty, note: l.note }; }) };
+  var body = { action: 'order', key: St.key, name: f.name.trim(), wa: normWa(f.wa), method: f.method, courier: f.courier || '', zone: f.zone || '', date: f.date || '', slot: f.slot || '', address: (f.address || '').trim(), maps: (f.maps || '').trim(), payment: f.payment, note: ((hasCatering() ? cateringNote(f) : '') + (f.note || '')).trim(), voucher: t.voucher ? t.voucher.code : '', tebus: St.tebusSel.slice(), items: St.cart.map(function (l) { return { id: l.id, prep: l.prep, pack: l.pack, qty: l.qty, note: l.note }; }) };
   API.post(body).then(function (r) {
     St.busy = false;
     if (!r.ok) {

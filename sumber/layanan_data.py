@@ -35,9 +35,9 @@ def _p(pid, name, cat, emoji, desc, badge, ri, prep=""):
 
 def produk_jasa():
     return [
-        _p("P21", "Nasi Box Katering Event (per box, min. 20)", "Katering & Lauk Jadi", "🍱", "Nasi, ayam, sayur, dan sambal dalam box. Pesan minimal 20 box, H-2 sebelum acara. Menu bisa diganti sesuai request.", "Katering", 2),
-        _p("P22", "Paket Prasmanan Event (per pax, min. 30)", "Katering & Lauk Jadi", "🍽️", "Prasmanan lengkap termasuk chafing dish dan penataan. Minimal 30 pax, pesan H-3. Konfirmasi menu lewat WhatsApp.", "Katering", 3),
-        _p("P23", "Lauk Jadi Request Pelanggan (per porsi)", "Katering & Lauk Jadi", "🍛", "Pilih lauk sendiri (ayam, ikan, daging, sayur). Harga final dikonfirmasi lewat WhatsApp setelah menu dipastikan.", "Request menu", 4),
+        _p("P21", "Nasi Box Katering Event (per box, min. 20)", "Katering & Lauk Jadi", "🍱", "Nasi, ayam, sayur, dan sambal dalam box. Pesan minimal 20 box, paling lambat H-1 sebelum acara. Menu bisa diganti sesuai request.", "Katering", 2),
+        _p("P22", "Paket Prasmanan Event (per pax, min. 30)", "Katering & Lauk Jadi", "🍽️", "Prasmanan lengkap termasuk chafing dish dan penataan. Minimal 30 pax, pesan paling lambat H-1. Konfirmasi menu lewat WhatsApp.", "Katering", 3),
+        _p("P23", "Lauk Jadi Request Pelanggan (per porsi)", "Katering & Lauk Jadi", "🍛", "Pilih lauk sendiri (ayam, ikan, daging, sayur). Pesan paling lambat H-1. Harga final dikonfirmasi lewat WhatsApp setelah menu dipastikan.", "Request menu", 4),
     ]
 
 

@@ -2,12 +2,13 @@
 var AD = { token: '', sheetUrl: '', data: null, S: null, tab: 'pesanan', dirty: false, ofilter: 'Semua', oq: '', period: '30', onlyDone: false, loading: false };
 try { AD.token = sessionStorage.getItem('sk_tok') || ''; AD.sheetUrl = sessionStorage.getItem('sk_sheet') || ''; } catch (e) {}
 
-var TABS = [['pesanan', 'Pesanan'], ['produk', 'Produk'], ['keuangan', 'Keuangan'], ['promo', 'Promo & Tampilan'], ['pengaturan', 'Pengaturan'], ['aduan', 'Aduan'], ['data', 'Data & Backup'], ['academy', 'Academy SOP']];
+var TABS = [['pesanan', 'Pesanan'], ['produk', 'Produk'], ['keuangan', 'Keuangan'], ['hpp', 'Kalkulator HPP'], ['promo', 'Promo & Tampilan'], ['pengaturan', 'Pengaturan'], ['aduan', 'Aduan'], ['data', 'Data & Backup'], ['academy', 'Academy SOP']];
 var ROW_TPL = {
   heroSlides: { badge: '', title: '', desc: '', cta: 'Belanja sekarang', emoji: '🛒' }, categories: { name: '', emoji: '🛒' }, values: { icon: '⭐', title: '', text: '' },
   vouchers: { code: '', label: '', type: 'potongan', value: 0, min: 0, newOnly: false, maxUses: 0, active: true, desc: '' },
   items: { id: '', name: '', price: 0, normalPrice: 0, emoji: '🛒', hpp: 0 }, options: { name: '', fee: 0 }, zones: { name: '', fee: 8000 },
-  slots: { name: '', time: '', daysBefore: 0, cutoffHour: 12, capacity: 30 }, methods: { name: '', detail: '' }, opex: { name: '', amount: 0 }
+  slots: { name: '', time: '', daysBefore: 0, cutoffHour: 12, capacity: 30 }, methods: { name: '', detail: '' }, opex: { name: '', amount: 0 },
+  materials: { name: '', buyPrice: 0, buyQty: 1000, useQty: 0, shrink: 0 }, extras: { name: '', kind: 'overhead', amount: 0 }
 };
 
 function aCall(action, extra) {
@@ -45,7 +46,7 @@ function renderAdmin() {
   var h = '<div class="wrap adm"><div class="adm-head"><h1><img src="' + esc(logoSm(S)) + '" alt="">Admin ' + esc(S.storeName) + '</h1><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" data-a="aRefresh">⟳ Muat ulang</button><a class="btn btn-ghost btn-sm" href="#">Lihat toko</a><button class="btn btn-ghost btn-sm" data-a="logout">Keluar</button></div></div>';
   h += '<div class="tabs" role="tablist">' + TABS.map(function (t) { return '<button class="tab" role="tab" data-a="tab" data-t="' + t[0] + '" aria-selected="' + (AD.tab === t[0]) + '">' + t[1] + (t[0] === 'pesanan' && newCount ? ' (' + newCount + ')' : '') + '</button>'; }).join('') + '</div>';
   if (!d) h += '<p class="muted">' + (AD.loading ? 'Memuat data...' : 'Data belum termuat.') + '</p>';
-  else h += '<div id="adm-body">' + ({ pesanan: tabPesanan, produk: tabProduk, keuangan: tabKeuangan, promo: tabPromo, pengaturan: tabPengaturan, aduan: tabAduan, data: tabData, academy: tabAcademy }[AD.tab])() + '</div>';
+  else h += '<div id="adm-body">' + ({ pesanan: tabPesanan, produk: tabProduk, keuangan: tabKeuangan, hpp: tabHpp, promo: tabPromo, pengaturan: tabPengaturan, aduan: tabAduan, data: tabData, academy: tabAcademy }[AD.tab])() + '</div>';
   v.innerHTML = h + '</div>'; if (AD.S) updPriceRows(); acCalc();
 }
 function saveBar() {
@@ -291,6 +292,7 @@ function onAdminClick(e) {
   var el = e.target.closest('[data-a]'); if (!el || el.tagName === 'SELECT' || (el.tagName === 'INPUT' && el.type === 'checkbox')) return;
   var a = el.getAttribute('data-a'), id = el.getAttribute('data-id');
   if (acAction(a, el)) return;
+  if (hppAction(a, el)) return;
   switch (a) {
     case 'login': { var pin = $('pin').value; el.disabled = true; API.post({ action: 'adminLogin', pin: pin }).then(function (r) { el.disabled = false; if (!r.ok) { $('login-err').textContent = r.error; return; } AD.token = r.token; AD.sheetUrl = r.sheetUrl || ''; try { sessionStorage.setItem('sk_tok', AD.token); sessionStorage.setItem('sk_sheet', AD.sheetUrl); } catch (x) {} loadAdmin(); }); break; }
     case 'logout': adminLogout(); break;
@@ -325,7 +327,7 @@ function onAdminChange(e) {
 }
 function onAdminInput(e) {
   var t = e.target;
-  if (t.hasAttribute('data-p')) { var v = t.getAttribute('data-t') === 'b' ? t.checked : t.getAttribute('data-t') === 'n' ? nz(t.value) : t.value; setPath(AD.S, t.getAttribute('data-p'), v); markDirty(); if (t.getAttribute('data-p') === 'finance.targetMargin') updPriceRows(); return; }
+  if (t.hasAttribute('data-p')) { var v = t.getAttribute('data-t') === 'b' ? t.checked : t.getAttribute('data-t') === 'n' ? nz(t.value) : t.value; setPath(AD.S, t.getAttribute('data-p'), v); markDirty(); if (t.getAttribute('data-p') === 'finance.targetMargin') updPriceRows(); if (t.getAttribute('data-p').indexOf('finance.hpp.') === 0) updHpp(); return; }
   if (t.hasAttribute('data-ac')) { acCalc(); return; }
   if (t.hasAttribute('data-pe')) { peCalc(); return; }
   if (t.hasAttribute('data-pr')) { updPriceRows(); return; }
@@ -339,4 +341,4 @@ function bindAdmin() {
   document.body.addEventListener('input', function (e) { if (e.target.closest('#modal') && AD.token) onAdminInput(e); });
   v.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.id === 'pin') { var b = v.querySelector('[data-a=login]'); if (b) b.click(); } });
 }
-function afterAdminRender() { updPriceRows(); }
+function afterAdminRender() { updPriceRows(); updHpp(); }

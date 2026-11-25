@@ -161,7 +161,7 @@ var Demo = (function () {
     return o;
   }
   function pubSettings(S) {
-    var o = clone(S); delete o.finance;
+    var o = clone(S); delete o.finance; delete o.hpp;
     o.vouchers = (o.vouchers || []).filter(function (v) { return v.active !== false; });
     if (o.tebus) o.tebus.items = o.tebus.items.map(function (i) { return { id: i.id, name: i.name, price: i.price, normalPrice: i.normalPrice, emoji: i.emoji }; });
     return o;

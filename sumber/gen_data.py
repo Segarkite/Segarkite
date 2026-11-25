@@ -178,6 +178,9 @@ prod("P20", "Udang Vaname Kupas Frozen IQF (250gr)", "Frozen Food", 36000, 39000
 
 if __name__ == "__main__":
     import sys
+    sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
+    import layanan_data
+    layanan_data.apply(DEFAULTS, PROD)
     out = sys.argv[1]
     json.dump(DEFAULTS, open(out + "/defaults.json", "w"), ensure_ascii=False, indent=1)
     json.dump(PROD, open(out + "/seed_products.json", "w"), ensure_ascii=False, indent=1)

@@ -49,6 +49,7 @@ function loadStore() {
 }
 
 /* ----- kerangka halaman ----- */
+function isSvc(p) { return /^(Jasa |Katering)/.test(p.cat || ''); }
 function renderStore() {
   var S = St.S, v = $('view-store'), wa = normWa(S.whatsapp);
   var cats = [{ name: 'Semua', emoji: '🛍️' }].concat(S.categories || []);
@@ -67,6 +68,7 @@ function renderStore() {
     '<button class="promo p1" data-a="goflash"><div><span class="t">Flash sale</span><h3>' + esc(S.flashTitle) + '</h3><p>Harga spesial, kuota terbatas</p></div><div class="ic">⚡</div></button>' +
     '<button class="promo p2" data-a="vouchers"><div><span class="t">Voucher</span><h3>Klaim voucher belanja</h3><p>Potongan dan gratis ongkir</p></div><div class="ic">🎟️</div></button></div></div></section>';
   h += '<section class="wrap sec"><div class="sec-h"><h2>Kategori</h2></div><div class="cats" id="cats">' + cats.map(function (c) { return '<button class="cat" data-a="cat" data-c="' + esc(c.name) + '" aria-pressed="' + (St.cat === c.name) + '"><span class="ci">' + esc(c.emoji) + '</span>' + esc(c.name) + '</button>'; }).join('') + '</div></section>';
+  if (S.services && (S.services.items || []).length) h += '<section class="wrap sec"><div class="sec-h"><h2>' + esc(S.services.title || 'Layanan kami') + '</h2></div><div class="svcs">' + S.services.items.map(function (x) { return '<button class="svc" data-a="cat" data-c="' + esc(x.cat) + '"><span class="si">' + esc(x.icon) + '</span><b>' + esc(x.title) + '</b><span>' + esc(x.text) + '</span></button>'; }).join('') + '</div></section>';
   h += '<section class="wrap sec" id="flash"></section>';
   h += '<section class="wrap sec" id="katalog"><div class="sortbar"><div class="sec-h" style="margin:0"><h2>Semua produk</h2></div><div class="sorts"><span>Urutkan:</span>' +
     [['rel', 'Terkait'], ['best', 'Terlaris'], ['low', 'Termurah'], ['high', 'Termahal']].map(function (s) { return '<button class="sort" data-a="sort" data-s="' + s[0] + '" aria-pressed="' + (St.sort === s[0]) + '">' + s[1] + '</button>'; }).join('') + '</div></div><div class="count muted" id="count"></div><div class="grid" id="grid"></div></section>';
@@ -139,7 +141,7 @@ function renderGrid() {
   g.innerHTML = l.map(function (p) {
     var out = stockOf(p) === 0, opts = p.prep.length || p.packs.length;
     var meta = '<span>' + (p.sold > 0 ? 'Terjual ' + p.sold : 'Baru') + '</span><span' + (stockOf(p) <= 5 && !out ? ' class="low"' : '') + '>' + (out ? 'Habis' : stockOf(p) === Infinity ? 'Stok tersedia' : 'Sisa ' + p.stock) + '</span>';
-    return '<article class="card' + (out ? ' out' : '') + '"><button class="open" data-a="open" data-id="' + esc(p.id) + '">' + artHtml(p) + '<span class="cat-l">' + esc(p.cat) + '</span><h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p></button>' +
+    return '<article class="card' + (out ? ' out' : '') + '"><button class="open" data-a="open" data-id="' + esc(p.id) + '">' + artHtml(p) + '<span class="cat-l">' + (isSvc(p) ? '<i class="svc-t">JASA</i> ' : '') + esc(p.cat) + '</span><h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p></button>' +
       '<div class="card-foot"><div class="card-row"><div class="pr">' + priceHtml(p) + '</div><button class="btn btn-primary btn-sm" data-a="' + (opts ? 'open' : 'add') + '" data-id="' + esc(p.id) + '"' + (out || !St.S.storeOpen ? ' disabled' : '') + '>' + (opts ? 'Pilih' : '+ Keranjang') + '</button></div><div class="card-meta">' + meta + '</div></div></article>';
   }).join('');
 }

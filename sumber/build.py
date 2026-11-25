@@ -26,7 +26,7 @@ open(os.path.join(OUT, "schema.sql"), "w", encoding="utf-8").write(rd("schema.sq
 # ---- Front-end
 logo_sm = "data:image/webp;base64," + rd("logo_sm.b64").strip()
 logo_lg = "data:image/webp;base64," + rd("logo_lg.b64").strip()
-js = "\n".join(rd(n) for n in ("core.js", "store.js", "admin.js", "academy.js", "boot.js"))
+js = "\n".join(rd(n) for n in ("core.js", "store.js", "admin.js", "academy.js", "hpp.js", "boot.js"))
 js = js.replace("/*__DEFAULTS__*/", defaults).replace("/*__SEED__*/", seed)
 js = js.replace("__LOGO_SM__", logo_sm).replace("__LOGO_LG__", logo_lg)
 app_js = "var CONFIG = { apiUrl: \"\" };\n(function () {\n'use strict';\n" + js + "\n})();\n"

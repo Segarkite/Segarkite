@@ -418,6 +418,13 @@ table.t input { width: 100%; min-width: 84px; padding: 6px 8px; border: 1px soli
 .admin-link:hover { background: rgba(255, 255, 255, .12); }
 @media (max-width: 640px) { .hd-acts .admin-btn { min-width: 44px; padding: 6px 8px; } }
 
+.svcs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.svc{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px;border:1.5px solid var(--line,#e3e8df);border-radius:14px;background:#fff;cursor:pointer;font:inherit;color:inherit}
+.svc:hover{border-color:var(--g,#2e7d32);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.svc .si{font-size:26px}.svc b{font-size:15px}.svc span:last-child{font-size:12.5px;color:#5b6657;line-height:1.4}
+.svc-t{font-style:normal;font-weight:800;font-size:10px;letter-spacing:.06em;background:#0B6B63;color:#fff;border-radius:99px;padding:1px 7px;margin-right:4px}
+@media(max-width:760px){.svcs{grid-template-columns:1fr 1fr}}
+
 </style>
 <div id="demo-bar" class="demo-bar" hidden></div>
 <div id="view-store" hidden></div>
@@ -425,7 +432,7 @@ table.t input { width: 100%; min-width: 84px; padding: 6px 8px; border: 1px soli
 <div id="toast" class="toast" role="status" hidden></div>
 
 <script>
-var CONFIG = { apiUrl: "https://sxoxriuuqkzztmxngsog.supabase.co/functions/v1/api" };
+var CONFIG = { apiUrl: "" };
 (function () {
 'use strict';
 /* ===== Data bawaan (satu sumber untuk Code.gs dan halaman ini) ===== */
@@ -498,6 +505,18 @@ var DEFAULT_S = {
   {
    "name": "MPASI Bayi",
    "emoji": "👶"
+  },
+  {
+   "name": "Katering & Lauk Jadi",
+   "emoji": "🍱"
+  },
+  {
+   "name": "Jasa Olah Bahan",
+   "emoji": "🔪"
+  },
+  {
+   "name": "Jasa Antar",
+   "emoji": "🛵"
   }
  ],
  "flashTitle": "FLASH SALE SUBUH",
@@ -718,6 +737,327 @@ var DEFAULT_S = {
    {
     "name": "Cadangan garansi kesegaran (waste)",
     "amount": 320000
+   }
+  ],
+  "hpp": {
+   "wage": 15000,
+   "overheadHour": 6000,
+   "feePct": 0,
+   "recipes": [
+    {
+     "id": "R01",
+     "name": "Jasa Fillet & Bersihkan Ikan (contoh)",
+     "type": "olah",
+     "unit": "kg",
+     "yield": 1,
+     "materials": [],
+     "laborMin": 25,
+     "workers": 1,
+     "extras": [
+      {
+       "name": "Plastik vakum",
+       "kind": "kemas",
+       "amount": 1000
+      },
+      {
+       "name": "Es batu & air",
+       "kind": "overhead",
+       "amount": 1500
+      }
+     ],
+     "ohHour": "",
+     "margin": 40,
+     "price": 0,
+     "productId": "P21"
+    },
+    {
+     "id": "R02",
+     "name": "Jasa Potong & Ungkep Ayam (contoh)",
+     "type": "olah",
+     "unit": "ekor",
+     "yield": 1,
+     "materials": [
+      {
+       "name": "Bumbu ungkep halus",
+       "buyPrice": 30000,
+       "buyQty": 1000,
+       "useQty": 150,
+       "shrink": 0
+      }
+     ],
+     "laborMin": 30,
+     "workers": 1,
+     "extras": [
+      {
+       "name": "Minyak & gas",
+       "kind": "overhead",
+       "amount": 2500
+      },
+      {
+       "name": "Plastik & label",
+       "kind": "kemas",
+       "amount": 1500
+      }
+     ],
+     "ohHour": "",
+     "margin": 35,
+     "price": 0,
+     "productId": "P22"
+    },
+    {
+     "id": "R03",
+     "name": "Jasa Vakum & Bekukan (contoh)",
+     "type": "olah",
+     "unit": "kemasan",
+     "yield": 10,
+     "materials": [],
+     "laborMin": 20,
+     "workers": 1,
+     "extras": [
+      {
+       "name": "Plastik vakum 10 pcs",
+       "kind": "kemas",
+       "amount": 10000
+      },
+      {
+       "name": "Label 10 pcs",
+       "kind": "kemas",
+       "amount": 3000
+      },
+      {
+       "name": "Listrik freezer",
+       "kind": "overhead",
+       "amount": 3000
+      }
+     ],
+     "ohHour": "",
+     "margin": 40,
+     "price": 0,
+     "productId": "P23"
+    },
+    {
+     "id": "R04",
+     "name": "Nasi Box Event 20 box (contoh)",
+     "type": "event",
+     "unit": "box",
+     "yield": 20,
+     "materials": [
+      {
+       "name": "Beras",
+       "buyPrice": 15000,
+       "buyQty": 1000,
+       "useQty": 3000,
+       "shrink": 0
+      },
+      {
+       "name": "Ayam",
+       "buyPrice": 38000,
+       "buyQty": 1000,
+       "useQty": 2000,
+       "shrink": 10
+      },
+      {
+       "name": "Sayur",
+       "buyPrice": 20000,
+       "buyQty": 1000,
+       "useQty": 1000,
+       "shrink": 15
+      },
+      {
+       "name": "Sambal & lalapan",
+       "buyPrice": 30000,
+       "buyQty": 1000,
+       "useQty": 600,
+       "shrink": 0
+      }
+     ],
+     "laborMin": 240,
+     "workers": 3,
+     "extras": [
+      {
+       "name": "Bumbu & minyak",
+       "kind": "overhead",
+       "amount": 40000
+      },
+      {
+       "name": "Box + sendok + tisu 20 set",
+       "kind": "kemas",
+       "amount": 50000
+      },
+      {
+       "name": "BBM antar",
+       "kind": "transport",
+       "amount": 30000
+      }
+     ],
+     "ohHour": "",
+     "margin": 30,
+     "price": 0,
+     "productId": "P24"
+    },
+    {
+     "id": "R05",
+     "name": "Prasmanan Event 30 pax (contoh)",
+     "type": "event",
+     "unit": "pax",
+     "yield": 30,
+     "materials": [
+      {
+       "name": "Beras",
+       "buyPrice": 15000,
+       "buyQty": 1000,
+       "useQty": 4500,
+       "shrink": 0
+      },
+      {
+       "name": "Ayam",
+       "buyPrice": 38000,
+       "buyQty": 1000,
+       "useQty": 3000,
+       "shrink": 10
+      },
+      {
+       "name": "Ikan",
+       "buyPrice": 50000,
+       "buyQty": 1000,
+       "useQty": 2500,
+       "shrink": 25
+      },
+      {
+       "name": "Sayur",
+       "buyPrice": 20000,
+       "buyQty": 1000,
+       "useQty": 3000,
+       "shrink": 15
+      }
+     ],
+     "laborMin": 360,
+     "workers": 4,
+     "extras": [
+      {
+       "name": "Bumbu, minyak, gas",
+       "kind": "overhead",
+       "amount": 90000
+      },
+      {
+       "name": "Sewa chafing dish & alat",
+       "kind": "overhead",
+       "amount": 60000
+      },
+      {
+       "name": "Piring, sendok, tisu 30 set",
+       "kind": "kemas",
+       "amount": 45000
+      },
+      {
+       "name": "BBM antar & setup",
+       "kind": "transport",
+       "amount": 50000
+      }
+     ],
+     "ohHour": "",
+     "margin": 35,
+     "price": 0,
+     "productId": "P25"
+    },
+    {
+     "id": "R06",
+     "name": "Jasa Antar Khusus Dalam Kota (contoh)",
+     "type": "antar",
+     "unit": "antaran",
+     "yield": 1,
+     "materials": [],
+     "laborMin": 40,
+     "workers": 1,
+     "extras": [
+      {
+       "name": "BBM & penyusutan motor",
+       "kind": "transport",
+       "amount": 6000
+      }
+     ],
+     "ohHour": 0,
+     "margin": 40,
+     "price": 0,
+     "productId": "P27"
+    },
+    {
+     "id": "R07",
+     "name": "Lauk Jadi Request 10 porsi (contoh)",
+     "type": "produk",
+     "unit": "porsi",
+     "yield": 10,
+     "materials": [
+      {
+       "name": "Ayam",
+       "buyPrice": 38000,
+       "buyQty": 1000,
+       "useQty": 1500,
+       "shrink": 10
+      },
+      {
+       "name": "Bumbu kuning & rempah",
+       "buyPrice": 30000,
+       "buyQty": 1000,
+       "useQty": 250,
+       "shrink": 0
+      },
+      {
+       "name": "Minyak goreng",
+       "buyPrice": 18000,
+       "buyQty": 1000,
+       "useQty": 500,
+       "shrink": 0
+      }
+     ],
+     "laborMin": 90,
+     "workers": 1,
+     "extras": [
+      {
+       "name": "Gas",
+       "kind": "overhead",
+       "amount": 4000
+      },
+      {
+       "name": "Kotak thinwall sekali pakai 10",
+       "kind": "kemas",
+       "amount": 15000
+      }
+     ],
+     "ohHour": "",
+     "margin": 35,
+     "price": 0,
+     "productId": "P26"
+    }
+   ]
+  }
+ },
+ "services": {
+  "title": "Layanan SegarKite",
+  "items": [
+   {
+    "icon": "🥬",
+    "title": "Fresh",
+    "text": "Ikan, ayam, daging, sayur, dan bumbu segar dari Flamboyan.",
+    "cat": "Ikan & Seafood"
+   },
+   {
+    "icon": "❄️",
+    "title": "Frozen",
+    "text": "Sisa bahan segar dibekukan -18°C, tahan lama dan praktis.",
+    "cat": "Frozen Food"
+   },
+   {
+    "icon": "🍱",
+    "title": "Katering & Lauk Jadi",
+    "text": "Menu SegarKite atau request sendiri, nasi box dan prasmanan event.",
+    "cat": "Katering & Lauk Jadi"
+   },
+   {
+    "icon": "🔪",
+    "title": "Jasa Olah & Antar",
+    "text": "Fillet, ungkep, vakum-bekukan, dan antar khusus ke rumah/acara.",
+    "cat": "Jasa Olah Bahan"
    }
   ]
  }
@@ -1062,6 +1402,104 @@ var SEED = [
   "packs": "Vacuum pack frozen tahan lama",
   "stock": 15,
   "flash": null
+ },
+ {
+  "id": "P21",
+  "name": "Jasa Fillet & Bersihkan Ikan (per kg)",
+  "cat": "Jasa Olah Bahan",
+  "price": 19000,
+  "oldPrice": 0,
+  "hpp": 10250,
+  "kemas": 1000,
+  "emoji": "🔪",
+  "badge": "Jasa olah",
+  "desc": "Ikan dari Flamboyan atau milik Anda difillet, dibuang sisik, insang, dan perut, lalu dikemas vakum.",
+  "prep": "Fillet tanpa tulang\nPotong steak\nBelah punggung siap bakar",
+  "packs": ""
+ },
+ {
+  "id": "P22",
+  "name": "Jasa Potong & Ungkep Ayam (per ekor)",
+  "cat": "Jasa Olah Bahan",
+  "price": 29500,
+  "oldPrice": 0,
+  "hpp": 17500,
+  "kemas": 1500,
+  "emoji": "🍗",
+  "badge": "Jasa olah",
+  "desc": "Ayam dipotong sesuai selera lalu diungkep bumbu kuning, siap goreng.",
+  "prep": "Potong 8\nPotong 12\nUngkep bumbu kuning",
+  "packs": ""
+ },
+ {
+  "id": "P23",
+  "name": "Jasa Vakum & Bekukan (per kemasan)",
+  "cat": "Jasa Olah Bahan",
+  "price": 4000,
+  "oldPrice": 0,
+  "hpp": 1000,
+  "kemas": 1300,
+  "emoji": "❄️",
+  "badge": "Jasa olah",
+  "desc": "Bahan segar dari belanja Anda dikemas vakum, diberi label tanggal, dan dibekukan -18°C.",
+  "prep": "",
+  "packs": ""
+ },
+ {
+  "id": "P24",
+  "name": "Nasi Box Katering Event (per box, min. 20)",
+  "cat": "Katering & Lauk Jadi",
+  "price": 35500,
+  "oldPrice": 0,
+  "hpp": 20749,
+  "kemas": 4000,
+  "emoji": "🍱",
+  "badge": "Katering",
+  "desc": "Nasi, ayam, sayur, dan sambal dalam box. Pesan minimal 20 box, H-2 sebelum acara. Menu bisa diganti sesuai request.",
+  "prep": "",
+  "packs": ""
+ },
+ {
+  "id": "P25",
+  "name": "Paket Prasmanan Event (per pax, min. 30)",
+  "cat": "Katering & Lauk Jadi",
+  "price": 55000,
+  "oldPrice": 0,
+  "hpp": 32581,
+  "kemas": 3167,
+  "emoji": "🍽️",
+  "badge": "Katering",
+  "desc": "Prasmanan lengkap termasuk chafing dish dan penataan. Minimal 30 pax, pesan H-3. Konfirmasi menu lewat WhatsApp.",
+  "prep": "",
+  "packs": ""
+ },
+ {
+  "id": "P26",
+  "name": "Lauk Jadi Request Pelanggan (per porsi)",
+  "cat": "Katering & Lauk Jadi",
+  "price": 20500,
+  "oldPrice": 0,
+  "hpp": 11533,
+  "kemas": 1500,
+  "emoji": "🍛",
+  "badge": "Request menu",
+  "desc": "Pilih lauk sendiri (ayam, ikan, daging, sayur). Harga final dikonfirmasi lewat WhatsApp setelah menu dipastikan.",
+  "prep": "",
+  "packs": ""
+ },
+ {
+  "id": "P27",
+  "name": "Jasa Antar Khusus Dalam Kota (per antaran)",
+  "cat": "Jasa Antar",
+  "price": 27000,
+  "oldPrice": 0,
+  "hpp": 10000,
+  "kemas": 6000,
+  "emoji": "🛵",
+  "badge": "Jasa antar",
+  "desc": "Antar belanjaan atau katering di luar jadwal kurir serentak. Jam dan titik antar dikonfirmasi lewat WhatsApp.",
+  "prep": "",
+  "packs": ""
  }
 ];
 var LOGO_SM = "data:image/webp;base64,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";
@@ -1224,7 +1662,7 @@ var Demo = (function () {
     return o;
   }
   function pubSettings(S) {
-    var o = clone(S); delete o.finance;
+    var o = clone(S); delete o.finance; delete o.hpp;
     o.vouchers = (o.vouchers || []).filter(function (v) { return v.active !== false; });
     if (o.tebus) o.tebus.items = o.tebus.items.map(function (i) { return { id: i.id, name: i.name, price: i.price, normalPrice: i.normalPrice, emoji: i.emoji }; });
     return o;
@@ -1392,6 +1830,7 @@ function loadStore() {
 }
 
 /* ----- kerangka halaman ----- */
+function isSvc(p) { return /^(Jasa |Katering)/.test(p.cat || ''); }
 function renderStore() {
   var S = St.S, v = $('view-store'), wa = normWa(S.whatsapp);
   var cats = [{ name: 'Semua', emoji: '🛍️' }].concat(S.categories || []);
@@ -1410,6 +1849,7 @@ function renderStore() {
     '<button class="promo p1" data-a="goflash"><div><span class="t">Flash sale</span><h3>' + esc(S.flashTitle) + '</h3><p>Harga spesial, kuota terbatas</p></div><div class="ic">⚡</div></button>' +
     '<button class="promo p2" data-a="vouchers"><div><span class="t">Voucher</span><h3>Klaim voucher belanja</h3><p>Potongan dan gratis ongkir</p></div><div class="ic">🎟️</div></button></div></div></section>';
   h += '<section class="wrap sec"><div class="sec-h"><h2>Kategori</h2></div><div class="cats" id="cats">' + cats.map(function (c) { return '<button class="cat" data-a="cat" data-c="' + esc(c.name) + '" aria-pressed="' + (St.cat === c.name) + '"><span class="ci">' + esc(c.emoji) + '</span>' + esc(c.name) + '</button>'; }).join('') + '</div></section>';
+  if (S.services && (S.services.items || []).length) h += '<section class="wrap sec"><div class="sec-h"><h2>' + esc(S.services.title || 'Layanan kami') + '</h2></div><div class="svcs">' + S.services.items.map(function (x) { return '<button class="svc" data-a="cat" data-c="' + esc(x.cat) + '"><span class="si">' + esc(x.icon) + '</span><b>' + esc(x.title) + '</b><span>' + esc(x.text) + '</span></button>'; }).join('') + '</div></section>';
   h += '<section class="wrap sec" id="flash"></section>';
   h += '<section class="wrap sec" id="katalog"><div class="sortbar"><div class="sec-h" style="margin:0"><h2>Semua produk</h2></div><div class="sorts"><span>Urutkan:</span>' +
     [['rel', 'Terkait'], ['best', 'Terlaris'], ['low', 'Termurah'], ['high', 'Termahal']].map(function (s) { return '<button class="sort" data-a="sort" data-s="' + s[0] + '" aria-pressed="' + (St.sort === s[0]) + '">' + s[1] + '</button>'; }).join('') + '</div></div><div class="count muted" id="count"></div><div class="grid" id="grid"></div></section>';
@@ -1482,7 +1922,7 @@ function renderGrid() {
   g.innerHTML = l.map(function (p) {
     var out = stockOf(p) === 0, opts = p.prep.length || p.packs.length;
     var meta = '<span>' + (p.sold > 0 ? 'Terjual ' + p.sold : 'Baru') + '</span><span' + (stockOf(p) <= 5 && !out ? ' class="low"' : '') + '>' + (out ? 'Habis' : stockOf(p) === Infinity ? 'Stok tersedia' : 'Sisa ' + p.stock) + '</span>';
-    return '<article class="card' + (out ? ' out' : '') + '"><button class="open" data-a="open" data-id="' + esc(p.id) + '">' + artHtml(p) + '<span class="cat-l">' + esc(p.cat) + '</span><h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p></button>' +
+    return '<article class="card' + (out ? ' out' : '') + '"><button class="open" data-a="open" data-id="' + esc(p.id) + '">' + artHtml(p) + '<span class="cat-l">' + (isSvc(p) ? '<i class="svc-t">JASA</i> ' : '') + esc(p.cat) + '</span><h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p></button>' +
       '<div class="card-foot"><div class="card-row"><div class="pr">' + priceHtml(p) + '</div><button class="btn btn-primary btn-sm" data-a="' + (opts ? 'open' : 'add') + '" data-id="' + esc(p.id) + '"' + (out || !St.S.storeOpen ? ' disabled' : '') + '>' + (opts ? 'Pilih' : '+ Keranjang') + '</button></div><div class="card-meta">' + meta + '</div></div></article>';
   }).join('');
 }
@@ -1799,12 +2239,13 @@ function bindStore() {
 var AD = { token: '', sheetUrl: '', data: null, S: null, tab: 'pesanan', dirty: false, ofilter: 'Semua', oq: '', period: '30', onlyDone: false, loading: false };
 try { AD.token = sessionStorage.getItem('sk_tok') || ''; AD.sheetUrl = sessionStorage.getItem('sk_sheet') || ''; } catch (e) {}
 
-var TABS = [['pesanan', 'Pesanan'], ['produk', 'Produk'], ['keuangan', 'Keuangan'], ['promo', 'Promo & Tampilan'], ['pengaturan', 'Pengaturan'], ['aduan', 'Aduan'], ['data', 'Data & Backup'], ['academy', 'Academy SOP']];
+var TABS = [['pesanan', 'Pesanan'], ['produk', 'Produk'], ['keuangan', 'Keuangan'], ['hpp', 'Kalkulator HPP'], ['promo', 'Promo & Tampilan'], ['pengaturan', 'Pengaturan'], ['aduan', 'Aduan'], ['data', 'Data & Backup'], ['academy', 'Academy SOP']];
 var ROW_TPL = {
   heroSlides: { badge: '', title: '', desc: '', cta: 'Belanja sekarang', emoji: '🛒' }, categories: { name: '', emoji: '🛒' }, values: { icon: '⭐', title: '', text: '' },
   vouchers: { code: '', label: '', type: 'potongan', value: 0, min: 0, newOnly: false, maxUses: 0, active: true, desc: '' },
   items: { id: '', name: '', price: 0, normalPrice: 0, emoji: '🛒', hpp: 0 }, options: { name: '', fee: 0 }, zones: { name: '', fee: 8000 },
-  slots: { name: '', time: '', daysBefore: 0, cutoffHour: 12, capacity: 30 }, methods: { name: '', detail: '' }, opex: { name: '', amount: 0 }
+  slots: { name: '', time: '', daysBefore: 0, cutoffHour: 12, capacity: 30 }, methods: { name: '', detail: '' }, opex: { name: '', amount: 0 },
+  materials: { name: '', buyPrice: 0, buyQty: 1000, useQty: 0, shrink: 0 }, extras: { name: '', kind: 'overhead', amount: 0 }
 };
 
 function aCall(action, extra) {
@@ -1842,7 +2283,7 @@ function renderAdmin() {
   var h = '<div class="wrap adm"><div class="adm-head"><h1><img src="' + esc(logoSm(S)) + '" alt="">Admin ' + esc(S.storeName) + '</h1><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" data-a="aRefresh">⟳ Muat ulang</button><a class="btn btn-ghost btn-sm" href="#">Lihat toko</a><button class="btn btn-ghost btn-sm" data-a="logout">Keluar</button></div></div>';
   h += '<div class="tabs" role="tablist">' + TABS.map(function (t) { return '<button class="tab" role="tab" data-a="tab" data-t="' + t[0] + '" aria-selected="' + (AD.tab === t[0]) + '">' + t[1] + (t[0] === 'pesanan' && newCount ? ' (' + newCount + ')' : '') + '</button>'; }).join('') + '</div>';
   if (!d) h += '<p class="muted">' + (AD.loading ? 'Memuat data...' : 'Data belum termuat.') + '</p>';
-  else h += '<div id="adm-body">' + ({ pesanan: tabPesanan, produk: tabProduk, keuangan: tabKeuangan, promo: tabPromo, pengaturan: tabPengaturan, aduan: tabAduan, data: tabData, academy: tabAcademy }[AD.tab])() + '</div>';
+  else h += '<div id="adm-body">' + ({ pesanan: tabPesanan, produk: tabProduk, keuangan: tabKeuangan, hpp: tabHpp, promo: tabPromo, pengaturan: tabPengaturan, aduan: tabAduan, data: tabData, academy: tabAcademy }[AD.tab])() + '</div>';
   v.innerHTML = h + '</div>'; if (AD.S) updPriceRows(); acCalc();
 }
 function saveBar() {
@@ -2088,6 +2529,7 @@ function onAdminClick(e) {
   var el = e.target.closest('[data-a]'); if (!el || el.tagName === 'SELECT' || (el.tagName === 'INPUT' && el.type === 'checkbox')) return;
   var a = el.getAttribute('data-a'), id = el.getAttribute('data-id');
   if (acAction(a, el)) return;
+  if (hppAction(a, el)) return;
   switch (a) {
     case 'login': { var pin = $('pin').value; el.disabled = true; API.post({ action: 'adminLogin', pin: pin }).then(function (r) { el.disabled = false; if (!r.ok) { $('login-err').textContent = r.error; return; } AD.token = r.token; AD.sheetUrl = r.sheetUrl || ''; try { sessionStorage.setItem('sk_tok', AD.token); sessionStorage.setItem('sk_sheet', AD.sheetUrl); } catch (x) {} loadAdmin(); }); break; }
     case 'logout': adminLogout(); break;
@@ -2122,7 +2564,7 @@ function onAdminChange(e) {
 }
 function onAdminInput(e) {
   var t = e.target;
-  if (t.hasAttribute('data-p')) { var v = t.getAttribute('data-t') === 'b' ? t.checked : t.getAttribute('data-t') === 'n' ? nz(t.value) : t.value; setPath(AD.S, t.getAttribute('data-p'), v); markDirty(); if (t.getAttribute('data-p') === 'finance.targetMargin') updPriceRows(); return; }
+  if (t.hasAttribute('data-p')) { var v = t.getAttribute('data-t') === 'b' ? t.checked : t.getAttribute('data-t') === 'n' ? nz(t.value) : t.value; setPath(AD.S, t.getAttribute('data-p'), v); markDirty(); if (t.getAttribute('data-p') === 'finance.targetMargin') updPriceRows(); if (t.getAttribute('data-p').indexOf('finance.hpp.') === 0) updHpp(); return; }
   if (t.hasAttribute('data-ac')) { acCalc(); return; }
   if (t.hasAttribute('data-pe')) { peCalc(); return; }
   if (t.hasAttribute('data-pr')) { updPriceRows(); return; }
@@ -2136,7 +2578,7 @@ function bindAdmin() {
   document.body.addEventListener('input', function (e) { if (e.target.closest('#modal') && AD.token) onAdminInput(e); });
   v.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.id === 'pin') { var b = v.querySelector('[data-a=login]'); if (b) b.click(); } });
 }
-function afterAdminRender() { updPriceRows(); }
+function afterAdminRender() { updPriceRows(); updHpp(); }
 
 /* ===== SegarKite Academy: SOP operasional di panel admin ===== */
 var AC = { mod: 'm1', last: 0 };
@@ -2262,6 +2704,85 @@ function acAction(a, el) {
     case 'acPrint': window.print(); return true;
     case 'acApply': acApply(); return true;
     case 'acCopy': { var t = $(el.getAttribute('data-id')); if (!t) return true; t.select(); var ok = false; try { ok = document.execCommand('copy'); } catch (e) {} if (navigator.clipboard) navigator.clipboard.writeText(t.value).then(function () { toast('Teks disalin'); }, function () { toast(ok ? 'Teks disalin' : 'Salin manual dari kotak teks', !ok); }); else toast(ok ? 'Teks disalin' : 'Salin manual dari kotak teks', !ok); return true; }
+  }
+  return false;
+}
+
+/* ===== Kalkulator HPP rinci (produk, jasa olah, katering event, jasa antar) ===== */
+var HPP_TYPES = [['produk', 'Produk / lauk jadi'], ['olah', 'Jasa olah bahan'], ['event', 'Katering event'], ['antar', 'Jasa antar']];
+var HPP_EXTRA = [['overhead', 'Overhead (gas, listrik, minyak, sewa alat)'], ['kemas', 'Kemasan & label'], ['transport', 'Transport / BBM']];
+AD.hppSel = 0;
+
+function hppRecipes() { if (!AD.S.finance) AD.S.finance = {}; if (!AD.S.finance.hpp) AD.S.finance.hpp = { wage: 15000, overheadHour: 6000, feePct: 0, recipes: [] }; if (!AD.S.finance.hpp.recipes) AD.S.finance.hpp.recipes = []; return AD.S.finance.hpp.recipes; }
+
+/* Hitung satu resep. Semua biaya dihitung per batch lalu dibagi hasil (yield). */
+function hppCalc(rc) {
+  var H = AD.S.finance.hpp || {}, F = AD.S.finance || {}, mat = 0, oh = 0, kemas = 0, trans = 0;
+  (rc.materials || []).forEach(function (m) {
+    var q = nz(m.buyQty), sh = Math.min(nz(m.shrink), 95);
+    if (q > 0) mat += nz(m.buyPrice) / q * nz(m.useQty) / (1 - sh / 100);
+  });
+  (rc.extras || []).forEach(function (x) { var a = nz(x.amount); if (x.kind === 'kemas') kemas += a; else if (x.kind === 'transport') trans += a; else oh += a; });
+  var hrs = nz(rc.laborMin) / 60, labor = hrs * nz(H.wage) * Math.max(1, nz(rc.workers, 1));
+  var ohHour = rc.ohHour === '' || rc.ohHour == null ? nz(H.overheadHour) : nz(rc.ohHour);
+  var ohTime = hrs * ohHour, y = Math.max(1, nz(rc.yield, 1)), fee = nz(H.feePct), mg = nz(rc.margin) > 0 ? nz(rc.margin) : nz(F.targetMargin, 25);
+  var batch = mat + labor + oh + ohTime + kemas + trans, unit = batch / y;
+  var den = 1 - mg / 100 - fee / 100, sug = den > 0.05 ? Math.ceil(unit / den / 500) * 500 : 0;
+  var price = nz(rc.price) > 0 ? nz(rc.price) : sug, profit = price * (1 - fee / 100) - unit;
+  return { mat: mat, labor: labor, oh: oh + ohTime, kemas: kemas, trans: trans, batch: batch, y: y, unit: unit,
+    hppUnit: (mat + labor + oh + ohTime) / y, kemasUnit: (kemas + trans) / y, sug: sug, price: price, profit: profit, pct: price > 0 ? Math.round(profit / price * 1000) / 10 : 0, mg: mg };
+}
+
+function tabHpp() {
+  var H = AD.S.finance.hpp || (AD.S.finance.hpp = { wage: 15000, overheadHour: 6000, feePct: 0, recipes: [] }), rs = hppRecipes();
+  if (AD.hppSel >= rs.length) AD.hppSel = Math.max(0, rs.length - 1);
+  var h = '<div class="notice" style="margin-bottom:14px">Isi bahan, waktu kerja, overhead, dan kemasan per <b>batch</b> (sekali masak/kerja). Sistem membagi dengan jumlah hasil untuk mendapat HPP per satuan, lalu menghitung harga saran dari target margin. Angka awal hanya <b>contoh</b>, ganti dengan biaya nyata Anda.</div>';
+  h += '<div class="set-sec"><h3>Asumsi umum</h3><div class="two-f">' + numF('Upah tenaga kerja per jam (Rp)', 'finance.hpp.wage') + numF('Overhead per jam kerja (gas, listrik, air, Rp)', 'finance.hpp.overheadHour') + numF('Biaya pembayaran/platform (%)', 'finance.hpp.feePct') + '</div><p class="hint">Upah per jam = gaji sebulan ÷ jam kerja sebulan. Target margin umum diatur di tab Keuangan (' + nz((AD.S.finance || {}).targetMargin, 25) + '%).</p></div>';
+  /* ringkasan semua resep */
+  h += '<div class="set-sec"><h3>Ringkasan semua resep</h3><div class="tbl-wrap"><table class="t"><thead><tr><th>Resep</th><th>Jenis</th><th class="r">HPP/satuan</th><th class="r">Kemas+kirim</th><th class="r">Harga saran</th><th class="r">Harga dipakai</th><th class="r">Margin %</th></tr></thead><tbody>' + (rs.length ? rs.map(function (rc, i) {
+    var c = hppCalc(rc); return '<tr><td><button class="chip" data-a="hppSel" data-i="' + i + '" aria-pressed="' + (i === AD.hppSel) + '">' + esc(rc.name || 'Tanpa nama') + '</button></td><td>' + esc((HPP_TYPES.filter(function (t) { return t[0] === rc.type; })[0] || ['', '-'])[1]) + '</td><td class="r num">' + rp(c.hppUnit) + '</td><td class="r num">' + rp(c.kemasUnit) + '</td><td class="r num">' + rp(c.sug) + '</td><td class="r num">' + rp(c.price) + '</td><td class="r ' + (c.pct < 15 ? 'bad' : '') + '">' + c.pct + '%</td></tr>';
+  }).join('') : '<tr><td colspan="7" class="muted">Belum ada resep.</td></tr>') + '</tbody></table></div><button class="btn btn-ghost btn-sm" style="margin-top:10px" data-a="hppNew">+ Resep / layanan baru</button></div>';
+  if (!rs.length) return h + saveBar();
+  var i = AD.hppSel, rc = rs[i], P = 'finance.hpp.recipes.' + i, prods = AD.data.products;
+  h += '<div class="set-sec"><h3>Rincian: ' + esc(rc.name || 'Tanpa nama') + '</h3>';
+  h += '<div class="two-f">' + fld('Nama resep / layanan', P + '.name') + '<div class="field"><label for="hp_type">Jenis</label><select id="hp_type" class="inp" data-p="' + P + '.type">' + HPP_TYPES.map(function (t) { return '<option value="' + t[0] + '"' + (rc.type === t[0] ? ' selected' : '') + '>' + t[1] + '</option>'; }).join('') + '</select></div>' +
+    fld('Satuan jual (mis. kg, porsi, box, pax, antaran)', P + '.unit') + fld('Hasil per batch (jumlah satuan)', P + '.yield', { num: true, hint: 'Contoh: 1 batch nasi box = 20 box.' }) + '</div>';
+  h += '<h4 style="margin:14px 0 4px">1. Bahan baku</h4><p class="hint">Harga beli dan isi kemasan beli (gram/ml/butir), jumlah yang dipakai per batch, dan susut (kulit, tulang, tumpah). Biaya efektif = harga per satuan × dipakai ÷ (1 − susut).</p>' +
+    rowsEditor(P + '.materials', [{ k: 'name', l: 'Bahan' }, { k: 'buyPrice', l: 'Harga beli (Rp)', t: 'n' }, { k: 'buyQty', l: 'Isi beli (g/ml/pcs)', t: 'n' }, { k: 'useQty', l: 'Dipakai per batch', t: 'n' }, { k: 'shrink', l: 'Susut (%)', t: 'n' }]);
+  h += '<h4 style="margin:14px 0 4px">2. Tenaga kerja</h4><div class="two-f">' + numF('Lama kerja per batch (menit)', P + '.laborMin') + numF('Jumlah orang', P + '.workers') + '</div>';
+  h += '<h4 style="margin:14px 0 4px">3. Overhead, kemasan, dan transport per batch</h4>' +
+    rowsEditor(P + '.extras', [{ k: 'name', l: 'Biaya' }, { k: 'kind', l: 'Golongan', t: 's', o: HPP_EXTRA.map(function (x) { return [x[0], x[1].split(' (')[0]]; }) }, { k: 'amount', l: 'Per batch (Rp)', t: 'n' }]) +
+    '<div class="two-f">' + fld('Overhead per jam khusus resep ini (kosong = angka umum, isi 0 bila tanpa overhead jam)', P + '.ohHour', { num: true }) + '</div>';
+  h += '<h4 style="margin:14px 0 4px">4. Margin dan harga</h4><div class="two-f">' + fld('Target margin (%) (0/kosong = target umum)', P + '.margin', { num: true }) + fld('Harga jual yang dipakai (Rp) (kosong = harga saran)', P + '.price', { num: true }) + '</div>';
+  h += '<div id="hpp-out" class="set-sec" style="background:var(--soft,#f6f8f4);margin-top:12px"></div>';
+  h += '<div class="field" style="margin-top:12px"><label for="hp_pid">Terapkan ke produk di etalase</label><div class="row"><select id="hp_pid" class="inp" data-p="' + P + '.productId"><option value="">- pilih produk / jasa -</option>' + prods.map(function (p) { return '<option value="' + esc(p.id) + '"' + (rc.productId === p.id ? ' selected' : '') + '>' + esc(p.cat + ' · ' + p.name) + '</option>'; }).join('') + '</select><button class="btn btn-primary" data-a="hppApply">Terapkan HPP &amp; harga</button></div><div class="hint">Mengisi kolom harga jual, HPP, dan kemas produk itu (otomatis dipakai menghitung margin tiap pesanan). Simpan dulu perubahan resep.</div></div>';
+  h += '<div class="row" style="margin-top:12px"><button class="btn btn-ghost btn-sm" data-a="hppDup">Duplikat resep</button><button class="btn btn-danger btn-sm" data-a="hppDel">Hapus resep</button></div></div>';
+  return h + saveBar();
+}
+
+function updHpp() {
+  var o = $('hpp-out'); if (!o) return; var rs = hppRecipes(), rc = rs[AD.hppSel]; if (!rc) return;
+  var c = hppCalc(rc), u = rc.unit || 'satuan', row = function (l, v, b) { return '<tr><td' + (b ? ' style="font-weight:800"' : '') + '>' + l + '</td><td class="r num"' + (b ? ' style="font-weight:800"' : '') + '>' + rp(v) + '</td><td class="r num muted">' + rp(v / c.y) + '</td></tr>'; };
+  o.innerHTML = '<h4 style="margin:0 0 8px">Hasil hitung (hasil ' + c.y + ' ' + esc(u) + ' per batch)</h4><div class="tbl-wrap"><table class="t"><thead><tr><th>Komponen</th><th class="r">Per batch</th><th class="r">Per ' + esc(u) + '</th></tr></thead><tbody>' +
+    row('Bahan baku (sudah termasuk susut)', c.mat) + row('Tenaga kerja', c.labor) + row('Overhead (biaya + alokasi per jam)', c.oh) + row('Kemasan & label', c.kemas) + row('Transport / BBM', c.trans) + row('Total HPP', c.batch, true) + '</tbody></table></div>' +
+    '<div class="stats" style="margin-top:10px"><div class="stat"><b>' + rp(c.hppUnit) + '</b><span>HPP bahan+kerja+overhead /' + esc(u) + '</span></div><div class="stat"><b>' + rp(c.kemasUnit) + '</b><span>Kemas + kirim /' + esc(u) + '</span></div><div class="stat"><b>' + rp(c.sug) + '</b><span>Harga saran (margin ' + c.mg + '%)</span></div><div class="stat ' + (c.profit >= 0 ? 'good' : 'bad') + '"><b>' + rp(c.profit) + '</b><span>Laba /' + esc(u) + ' di harga ' + rp(c.price) + ' (' + c.pct + '%)</span></div></div>' +
+    '<p class="muted" style="margin-top:8px">Laba per batch: <b>' + rp(c.profit * c.y) + '</b>. Titik impas harga: <b>' + rp(Math.ceil(c.unit / (1 - nz((AD.S.finance.hpp || {}).feePct) / 100))) + '</b> per ' + esc(u) + '.</p>';
+}
+
+function hppAction(a, el) {
+  if (a.indexOf('hpp') !== 0 || !AD.S) return false;
+  var rs = hppRecipes();
+  if (a === 'hppSel') { AD.hppSel = +el.getAttribute('data-i'); renderAdmin(); return true; }
+  if (a === 'hppNew') { rs.push({ id: 'R' + Date.now().toString(36), name: 'Resep baru', type: 'produk', unit: 'porsi', yield: 1, materials: [], laborMin: 0, workers: 1, extras: [], ohHour: '', margin: '', price: 0, productId: '' }); AD.hppSel = rs.length - 1; markDirty(); renderAdmin(); return true; }
+  if (a === 'hppDup') { var c = clone(rs[AD.hppSel]); c.id = 'R' + Date.now().toString(36); c.name += ' (salinan)'; c.productId = ''; rs.push(c); AD.hppSel = rs.length - 1; markDirty(); renderAdmin(); return true; }
+  if (a === 'hppDel') { if (confirm('Hapus resep ini?')) { rs.splice(AD.hppSel, 1); AD.hppSel = 0; markDirty(); renderAdmin(); } return true; }
+  if (a === 'hppApply') {
+    var rc = rs[AD.hppSel]; if (!rc || !rc.productId) { toast('Pilih produk tujuan dulu.', true); return true; }
+    if (AD.dirty) { toast('Simpan perubahan resep dulu (tombol simpan di bawah).', true); return true; }
+    var c2 = hppCalc(rc), pr = AD.data.products.filter(function (p) { return p.id === rc.productId; })[0];
+    if (!confirm('Isi "' + (pr ? pr.name : rc.productId) + '" dengan harga ' + rp(c2.price) + ', HPP ' + rp(c2.hppUnit) + ', kemas+kirim ' + rp(c2.kemasUnit) + '?')) return true;
+    aCall('adminPricingSave', { rows: [{ id: rc.productId, price: c2.price, hpp: Math.round(c2.hppUnit), kemas: Math.round(c2.kemasUnit) }] }).then(function (r) { if (r.ok) { toast('HPP dan harga produk diperbarui'); loadAdmin(); } else toast(r.error || 'Gagal menerapkan.', true); });
+    return true;
   }
   return false;
 }

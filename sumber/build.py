@@ -48,7 +48,7 @@ head = (
     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
     "<link rel=\"icon\" type=\"image/webp\" href=\"" + logo_sm + "\">\n"
 )
-api = os.environ.get("SK_API_URL", "")
+api = os.environ.get("SK_API_URL", "https://sxoxriuuqkzztmxngsog.supabase.co/functions/v1/api")
 live = body.replace('var CONFIG = { apiUrl: "" };', 'var CONFIG = { apiUrl: "%s" };' % api)
 open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(head + live + "</body>\n</html>\n")
 print("build ok:", {f: os.path.getsize(os.path.join(OUT, f)) for f in os.listdir(OUT)})

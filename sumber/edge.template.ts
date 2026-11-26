@@ -24,16 +24,21 @@ function parseOpts(t: any) {
     return { name: s, fee: 0 };
   });
 }
+function parseTiers(t: any) {
+  return String(t || "").split(/\r?\n|;/).map((s) => s.trim()).filter(Boolean).map((s) => { const m = s.match(/^(\d+)\s*[=:]\s*(\d+(?:[.,]\d+)?)\s*%?/); return m ? { min: +m[1], pct: Math.min(90, parseFloat(m[2].replace(",", "."))) } : null; }).filter((x: any) => x && x.min > 0 && x.pct > 0).sort((a: any, b: any) => a.min - b.min);
+}
+function tierPct(tiers: any[], qty: number) { let p = 0; for (const t of tiers) if (qty >= t.min) p = t.pct; return p; }
+const tomorrowWIB = () => new Date(Date.parse(todayWIB()) + 864e5).toISOString().slice(0, 10);
 function flashEnd(v: any) { const m = String(v || "").trim().match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4] - 7, +m[5]) : 0; }
 const fmtTime = (iso: string) => new Date(iso).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short", timeZone: "Asia/Pontianak" });
 
 /* ---------- konversi baris <-> objek API ---------- */
-const toP = (r: any) => ({ id: r.id, name: r.name, cat: r.cat, price: r.price, oldPrice: r.old_price, hpp: r.hpp, kemas: r.kemas, stock: r.stock, image: r.image, emoji: r.emoji, desc: r.descr, badge: r.badge, prepText: r.prep_text, packText: r.pack_text, flashPrice: r.flash_price, flashUntil: r.flash_until, flashQuota: r.flash_quota, active: r.active, order: r.sort });
-const fromP = (p: any) => ({ id: p.id, name: p.name, cat: p.cat, price: p.price, old_price: p.oldPrice, hpp: p.hpp, kemas: p.kemas, stock: p.stock, image: p.image, emoji: p.emoji, descr: p.desc, badge: p.badge, prep_text: p.prepText, pack_text: p.packText, flash_price: p.flashPrice, flash_until: p.flashUntil, flash_quota: p.flashQuota, active: p.active, sort: p.order, updated_at: new Date().toISOString() });
+const toP = (r: any) => ({ id: r.id, name: r.name, cat: r.cat, price: r.price, oldPrice: r.old_price, hpp: r.hpp, kemas: r.kemas, stock: r.stock, image: r.image, emoji: r.emoji, desc: r.descr, badge: r.badge, prepText: r.prep_text, size: r.size, tiers: r.tiers, minQty: r.min_qty, reqList: r.req_list, packText: r.pack_text, flashPrice: r.flash_price, flashUntil: r.flash_until, flashQuota: r.flash_quota, active: r.active, order: r.sort });
+const fromP = (p: any) => ({ id: p.id, name: p.name, cat: p.cat, price: p.price, old_price: p.oldPrice, hpp: p.hpp, kemas: p.kemas, stock: p.stock, image: p.image, emoji: p.emoji, descr: p.desc, badge: p.badge, prep_text: p.prepText, size: p.size || "", tiers: p.tiers || "", min_qty: p.minQty || 0, req_list: !!p.reqList, pack_text: p.packText, flash_price: p.flashPrice, flash_until: p.flashUntil, flash_quota: p.flashQuota, active: p.active, sort: p.order, updated_at: new Date().toISOString() });
 function pub(p: any, sm: any, admin: boolean) {
   const on = nz(p.flashPrice) > 0 && flashEnd(p.flashUntil) > Date.now();
-  const o: any = { id: p.id, name: p.name, cat: p.cat, price: p.price, oldPrice: p.oldPrice, stock: p.stock, image: p.image, emoji: p.emoji, desc: p.desc, badge: p.badge, prep: parseOpts(p.prepText), packs: parseOpts(p.packText), flash: on ? { price: p.flashPrice, until: flashEnd(p.flashUntil), quota: p.flashQuota } : null, active: p.active, order: p.order, sold: sm[p.id] || 0 };
-  if (admin) { o.hpp = p.hpp; o.kemas = p.kemas; o.prepText = p.prepText; o.packText = p.packText; o.flashPrice = p.flashPrice; o.flashUntil = p.flashUntil; o.flashQuota = p.flashQuota; }
+  const o: any = { id: p.id, name: p.name, cat: p.cat, price: p.price, oldPrice: p.oldPrice, stock: p.stock, image: p.image, emoji: p.emoji, desc: p.desc, badge: p.badge, size: p.size, tiers: parseTiers(p.tiers), minQty: p.minQty, reqList: p.reqList, prep: parseOpts(p.prepText), packs: parseOpts(p.packText), flash: on ? { price: p.flashPrice, until: flashEnd(p.flashUntil), quota: p.flashQuota } : null, active: p.active, order: p.order, sold: sm[p.id] || 0 };
+  if (admin) { o.tiersText = p.tiers; o.hpp = p.hpp; o.kemas = p.kemas; o.prepText = p.prepText; o.packText = p.packText; o.flashPrice = p.flashPrice; o.flashUntil = p.flashUntil; o.flashQuota = p.flashQuota; }
   return o;
 }
 function toO(r: any, admin: boolean) {
@@ -53,7 +58,7 @@ async function ensureSeed() {
     const { count } = await sb.from("products").select("id", { count: "exact", head: true });
     if (!count) {
       const t = Date.now() + 7 * 36e5;
-      const rows = SEED.map((s: any, i: number) => fromP({ id: s.id, name: s.name, cat: s.cat, price: s.price, oldPrice: s.oldPrice || 0, hpp: s.hpp, kemas: s.kemas, stock: s.stock ?? null, image: "", emoji: s.emoji, desc: s.desc, badge: s.badge, prepText: s.prep, packText: s.packs, flashPrice: s.flash ? s.flash.price : 0, flashUntil: s.flash ? new Date(t + s.flash.hours * 36e5).toISOString().slice(0, 16) : "", flashQuota: s.flash ? s.flash.quota : 0, active: true, order: i + 1 }));
+      const rows = SEED.map((s: any, i: number) => fromP({ id: s.id, name: s.name, cat: s.cat, price: s.price, oldPrice: s.oldPrice || 0, hpp: s.hpp, kemas: s.kemas, stock: s.stock ?? null, image: "", emoji: s.emoji, desc: s.desc, badge: s.badge, prepText: s.prep, packText: s.packs, size: s.size || "", tiers: s.tiers || "", minQty: s.minQty || 0, reqList: !!s.reqList, flashPrice: s.flash ? s.flash.price : 0, flashUntil: s.flash ? new Date(t + s.flash.hours * 36e5).toISOString().slice(0, 16) : "", flashQuota: s.flash ? s.flash.quota : 0, active: true, order: i + 1 }));
       await sb.from("products").insert(rows);
     }
     await sb.from("kv").upsert({ k: "seeded", v: true });
@@ -122,14 +127,24 @@ async function createOrder(d: any) {
   for (const rq of d.items) {
     const q = Math.floor(nz(rq.qty)), p = prods.find((x: any) => x.id === rq.id && x.active);
     if (!p) return err("Ada produk yang sudah tidak dijual. Muat ulang halaman.");
-    if (q < 1 || q > 99) return err("Jumlah barang tidak valid.");
+    if (q < 1 || q > 999) return err("Jumlah barang tidak valid.");
+    if (p.reqList && !String(rq.note || "").trim()) return err('Isi daftar request untuk "' + p.name + '".');
     const pl = parseOpts(p.prepText), kl = parseOpts(p.packText); let prep = "", pack = "", fee = 0;
     if (pl.length) { const o1 = pl.find((x) => x.name === (rq.prep || pl[0].name)); if (!o1) return err('Pilihan potongan "' + p.name + '" sudah berubah. Muat ulang halaman.'); prep = o1.name; fee += o1.fee; }
     if (kl.length) { const o2 = kl.find((x) => x.name === (rq.pack || kl[0].name)); if (!o2) return err('Pilihan kemasan "' + p.name + '" sudah berubah. Muat ulang halaman.'); pack = o2.name; fee += o2.fee; }
     const flashOn = nz(p.flashPrice) > 0 && flashEnd(p.flashUntil) > now;
     const unit = (flashOn ? p.flashPrice : p.price) + fee;
-    lines.push({ id: p.id, name: p.name, price: unit, qty: q, prep, pack, note: clean(rq.note, 200), cost: nz(p.hpp) + nz(p.kemas) });
+    lines.push({ id: p.id, name: p.name, price: unit, qty: q, prep, pack, note: clean(rq.note, p.reqList ? 700 : 200), cost: nz(p.hpp) + nz(p.kemas) });
     sub += unit * q; need[p.id] = (need[p.id] || 0) + q;
+  }
+  for (const pid in need) { const pr = prods.find((x: any) => x.id === pid); if (nz(pr.minQty) > 0 && need[pid] < pr.minQty) return err('"' + pr.name + '" minimal pesan ' + pr.minQty + "."); }
+  sub = 0;
+  for (const l of lines) { const pr = prods.find((x: any) => x.id === l.id), pct = tierPct(parseTiers(pr.tiers), need[l.id]); if (pct > 0) { l.list = l.price; l.price = Math.round(l.price * (1 - pct / 100)); l.tier = pct; } sub += l.price * l.qty; }
+  const isCat = lines.some((l) => /^Katering/.test((prods.find((x: any) => x.id === l.id) || {}).cat || "")); let cnote = "";
+  if (isCat) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(d.cdate || ""))) return err("Isi tanggal katering dibutuhkan.");
+    if (d.cdate < tomorrowWIB()) return err("Pesanan katering minimal H-1. Pilih tanggal mulai besok atau setelahnya.");
+    cnote = "[KATERING] Dibutuhkan: " + d.cdate.split("-").reverse().join("/") + (/^\d{2}:\d{2}$/.test(String(d.ctime || "")) ? " jam " + d.ctime : "") + ". ";
   }
   for (const pid in need) { const pr = prods.find((x: any) => x.id === pid); if (pr.stock !== null && need[pid] > pr.stock) return err('Stok "' + pr.name + '" tersisa ' + pr.stock + "."); }
   const T = S.tebus || {}, productSub = sub;
@@ -156,6 +171,7 @@ async function createOrder(d: any) {
     if (!sc.enabled || !z || !sl) return err("Pilih rute dan sesi antar."); if (!String(d.address || "").trim()) return err("Isi alamat pengiriman.");
     const today = todayWIB(), last = new Date(Date.parse(today) + nz(sc.daysAhead, 3) * 864e5).toISOString().slice(0, 10);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(d.date)) || d.date < today || d.date > last) return err("Tanggal antar tidak valid.");
+    if (isCat && d.date < tomorrowWIB()) return err("Antar katering minimal H-1. Pilih tanggal mulai besok.");
     if (now >= cutoffAt(d.date, sl)) return err("Batas pesan untuk " + sl.name + " sudah lewat. Pilih sesi atau tanggal lain.");
     method = sc.label; zone = z.name; slot = sl.name; date = d.date; cap = nz(sl.capacity);
     ship = nz(sc.freeFrom) > 0 && sub >= nz(sc.freeFrom) ? 0 : nz(z.fee);
@@ -166,7 +182,7 @@ async function createOrder(d: any) {
   if (!pay) return err("Pilih metode pembayaran.");
   const lineMargin = lines.reduce((s, l) => s + (l.price - l.cost) * l.qty, 0);
   const margin = lineMargin - discount + (m === "scheduled" ? ship - nz((S.finance || {}).courierCost) : 0);
-  const o = { name, wa, method, zone, address: clean(d.address, 300).trim(), maps: clean(d.maps, 300).trim(), date, slot, summary: lines.map(lineText).join("; "), subtotal: sub, discount, voucher: voucher ? voucher.code : "", shipping: ship, total: sub + ship - discount, margin: Math.round(margin), payment: pay.name, note: clean(d.note, 300), status: "Baru", items: lines, key: clean(d.key, 80) || null, sig: sigOf(lines), ts: now };
+  const o = { name, wa, method, zone, address: clean(d.address, 300).trim(), maps: clean(d.maps, 300).trim(), date, slot, summary: lines.map(lineText).join("; "), subtotal: sub, discount, voucher: voucher ? voucher.code : "", shipping: ship, total: sub + ship - discount, margin: Math.round(margin), payment: pay.name, note: clean(cnote + clean(d.note, 300), 500), status: "Baru", items: lines, key: clean(d.key, 80) || null, sig: sigOf(lines), ts: now };
   const dec = Object.keys(need).map((id) => ({ id, qty: need[id] }));
   const { data, error } = await sb.rpc("commit_order", { o, dl: dec, cap });
   if (error) { console.error(error); return err("Pesanan gagal disimpan. Coba lagi."); }
@@ -228,7 +244,7 @@ async function handle(r: any): Promise<any> {
     if (!String(pr.name || "").trim()) return err("Nama produk wajib diisi.");
     if (nz(pr.flashPrice) > 0 && !flashEnd(pr.flashUntil)) return err("Isi tanggal dan jam berakhir flash sale.");
     const all = await allProducts(), cur = all.find((x: any) => x.id === pr.id);
-    const rec: any = { id: pr.id, name: clean(pr.name, 120).trim(), cat: clean(pr.cat || "Lainnya", 60).trim(), price: Math.max(0, Math.floor(nz(pr.price))), oldPrice: Math.max(0, Math.floor(nz(pr.oldPrice))), hpp: Math.max(0, Math.round(nz(pr.hpp))), kemas: Math.max(0, Math.round(nz(pr.kemas))), stock: pr.stock === "" || pr.stock == null ? null : Math.max(0, Math.floor(nz(pr.stock))), image: clean(pr.image, 1000), emoji: clean(pr.emoji, 8), desc: clean(pr.desc, 1500), badge: clean(pr.badge, 60), prepText: clean(pr.prepText, 600), packText: clean(pr.packText, 600), flashPrice: nz(pr.flashPrice) > 0 ? Math.floor(nz(pr.flashPrice)) : 0, flashUntil: nz(pr.flashPrice) > 0 ? clean(pr.flashUntil, 20) : "", flashQuota: Math.max(0, nz(pr.flashQuota)), active: pr.active !== false, order: pr.order ? Math.floor(nz(pr.order)) : cur ? cur.order : all.length + 1 };
+    const rec: any = { id: pr.id, name: clean(pr.name, 120).trim(), cat: clean(pr.cat || "Lainnya", 60).trim(), price: Math.max(0, Math.floor(nz(pr.price))), oldPrice: Math.max(0, Math.floor(nz(pr.oldPrice))), hpp: Math.max(0, Math.round(nz(pr.hpp))), kemas: Math.max(0, Math.round(nz(pr.kemas))), stock: pr.stock === "" || pr.stock == null ? null : Math.max(0, Math.floor(nz(pr.stock))), image: clean(pr.image, 1000), emoji: clean(pr.emoji, 8), desc: clean(pr.desc, 1500), badge: clean(pr.badge, 60), prepText: clean(pr.prepText, 600), packText: clean(pr.packText, 600), flashPrice: nz(pr.flashPrice) > 0 ? Math.floor(nz(pr.flashPrice)) : 0, flashUntil: nz(pr.flashPrice) > 0 ? clean(pr.flashUntil, 20) : "", flashQuota: Math.max(0, nz(pr.flashQuota)), size: clean(pr.size, 120), tiers: clean(pr.tiersText ?? pr.tiers ?? "", 200), minQty: Math.max(0, Math.floor(nz(pr.minQty))), reqList: !!pr.reqList, active: pr.active !== false, order: pr.order ? Math.floor(nz(pr.order)) : cur ? cur.order : all.length + 1 };
     if (!cur) rec.id = "P" + ("0" + (all.reduce((mx: number, x: any) => Math.max(mx, parseInt(String(x.id).replace(/\D/g, ""), 10) || 0), 0) + 1)).slice(-2);
     const { error } = await sb.from("products").upsert(fromP(rec));
     return error ? err("Produk gagal disimpan.") : { ok: true, id: rec.id };

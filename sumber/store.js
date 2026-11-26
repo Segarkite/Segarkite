@@ -13,8 +13,9 @@ function lineKey(id, prep, pack) { return id + '|' + (prep || '') + '|' + (pack 
 function optFee(list, name) { var o = list.filter(function (x) { return x.name === name; })[0]; return o ? o.fee : 0; }
 function lineUnit(l, p) { return basePrice(p) + optFee(p.prep, l.prep) + optFee(p.packs, l.pack); }
 function cartLines() {
-  var out = [];
-  St.cart.forEach(function (l) { var p = prodById(l.id); if (p) out.push({ l: l, p: p, unit: lineUnit(l, p) }); });
+  var out = [], tot = {};
+  St.cart.forEach(function (l) { tot[l.id] = (tot[l.id] || 0) + l.qty; });
+  St.cart.forEach(function (l) { var p = prodById(l.id); if (p) { var raw = lineUnit(l, p), pct = tierPct(p.tiers, tot[l.id]); out.push({ l: l, p: p, raw: raw, pct: pct, unit: pct ? Math.round(raw * (1 - pct / 100)) : raw }); } });
   return out;
 }
 function cartCount() { return St.cart.reduce(function (s, l) { return s + l.qty; }, 0); }
@@ -49,6 +50,11 @@ function loadStore() {
 }
 
 /* ----- kerangka halaman ----- */
+function minQtyErr() {
+  var tot = {}, msg = ''; St.cart.forEach(function (l) { tot[l.id] = (tot[l.id] || 0) + l.qty; });
+  Object.keys(tot).forEach(function (id) { var p = prodById(id); if (!msg && p && nz(p.minQty) > 0 && tot[id] < p.minQty) msg = p.name + ': minimal pesan ' + p.minQty + ' (sekarang ' + tot[id] + ').'; });
+  return msg;
+}
 function hasCatering() { return cartLines().some(function (x) { return /^Katering/.test(x.p.cat || ''); }); }
 function cateringNote(f) { return '[KATERING] Dibutuhkan: ' + f.cdate.split('-').reverse().join('/') + (f.ctime ? ' jam ' + f.ctime : '') + '. '; }
 function isSvc(p) { return /^Katering/.test(p.cat || ''); }
@@ -143,7 +149,7 @@ function renderGrid() {
   g.innerHTML = l.map(function (p) {
     var out = stockOf(p) === 0, opts = p.prep.length || p.packs.length;
     var meta = '<span>' + (p.sold > 0 ? 'Terjual ' + p.sold : 'Baru') + '</span><span' + (stockOf(p) <= 5 && !out ? ' class="low"' : '') + '>' + (out ? 'Habis' : stockOf(p) === Infinity ? 'Stok tersedia' : 'Sisa ' + p.stock) + '</span>';
-    return '<article class="card' + (out ? ' out' : '') + '"><button class="open" data-a="open" data-id="' + esc(p.id) + '">' + artHtml(p) + '<span class="cat-l">' + (isSvc(p) ? '<i class="svc-t">JASA</i> ' : '') + esc(p.cat) + '</span><h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p></button>' +
+    return '<article class="card' + (out ? ' out' : '') + '"><button class="open" data-a="open" data-id="' + esc(p.id) + '">' + artHtml(p) + '<span class="cat-l">' + (isSvc(p) ? '<i class="svc-t">JASA</i> ' : '') + esc(p.cat) + '</span><h3>' + esc(p.name) + '</h3>' + (p.size ? '<div class="sz">' + esc(p.size) + '</div>' : '') + '<p>' + esc(p.desc) + '</p>' + ((p.tiers || []).length ? '<div class="tier-chip">Beli banyak hemat sampai ' + p.tiers[p.tiers.length - 1].pct + '%</div>' : '') + '</button>' +
       '<div class="card-foot"><div class="card-row"><div class="pr">' + priceHtml(p) + '</div><button class="btn btn-primary btn-sm" data-a="' + (opts ? 'open' : 'add') + '" data-id="' + esc(p.id) + '"' + (out || !St.S.storeOpen ? ' disabled' : '') + '>' + (opts ? 'Pilih' : '+ Keranjang') + '</button></div><div class="card-meta">' + meta + '</div></div></article>';
   }).join('');
 }
@@ -169,9 +175,9 @@ function locationSection() {
 }
 
 /* ----- keranjang ----- */
-function addToCart(id, prep, pack, qty, note) {
+function addToCart(id, prep, pack, qty, note, uniq) {
   var p = prodById(id); if (!p) return;
-  var k = lineKey(id, prep, pack), ln = St.cart.filter(function (l) { return l.key === k; })[0];
+  var k = lineKey(id, prep, pack) + (uniq ? '|' + Date.now() : ''), ln = St.cart.filter(function (l) { return l.key === k; })[0];
   var cap = stockOf(p), have = inCart(id);
   if (have + qty > cap) { toast('Stok ' + p.name + ' tersisa ' + cap + '.', true); qty = Math.max(0, cap - have); if (!qty) return; }
   if (ln) { ln.qty += qty; if (note) ln.note = note; } else St.cart.push({ key: k, id: id, prep: prep || '', pack: pack || '', qty: qty, note: note || '' });
@@ -181,7 +187,7 @@ function setQty(k, d) {
   var l = St.cart.filter(function (x) { return x.key === k; })[0]; if (!l) return;
   var p = prodById(l.id), n = l.qty + d;
   if (d > 0 && inCart(l.id) + d > stockOf(p)) { toast('Stok ' + p.name + ' tersisa ' + p.stock + '.', true); return; }
-  if (n < 1) St.cart = St.cart.filter(function (x) { return x !== l; }); else l.qty = Math.min(99, n);
+  if (n < 1) St.cart = St.cart.filter(function (x) { return x !== l; }); else l.qty = Math.min(999, n);
   saveCart(); renderBadge(); renderDrawer();
 }
 
@@ -222,7 +228,7 @@ function renderDrawer() {
   if (St.stage === 'cart') {
     h += t.lines.map(function (x) {
       var o = [x.l.prep, x.l.pack].filter(Boolean).join(' | ');
-      return '<div class="line-item"><div class="li-main"><div class="em">' + (imgSrc(x.p.image) ? '<img src="' + esc(x.p.image) + '" alt="">' : esc(x.p.emoji || '🛒')) + '</div><div><b>' + esc(x.p.name) + '</b>' + (o ? '<small>' + esc(o) + '</small>' : '') + (x.l.note ? '<small>Catatan: ' + esc(x.l.note) + '</small>' : '') + '<div class="pr num"><b>' + rp(x.unit) + '</b></div></div></div><div style="text-align:right"><div class="stepper"><button data-a="dec" data-k="' + esc(x.l.key) + '" aria-label="Kurangi">−</button><span>' + x.l.qty + '</span><button data-a="inc" data-k="' + esc(x.l.key) + '" aria-label="Tambah">+</button></div><div class="num" style="font-size:12px;margin-top:4px;font-weight:800">' + rp(x.unit * x.l.qty) + '</div></div></div>';
+      return '<div class="line-item"><div class="li-main"><div class="em">' + (imgSrc(x.p.image) ? '<img src="' + esc(x.p.image) + '" alt="">' : esc(x.p.emoji || '🛒')) + '</div><div><b>' + esc(x.p.name) + '</b>' + (x.pct ? '<small>Diskon beli banyak ' + x.pct + '% (' + rp(x.raw) + ' menjadi ' + rp(x.unit) + ')</small>' : '') + (o ? '<small>' + esc(o) + '</small>' : '') + (x.l.note ? '<small>Catatan: ' + esc(x.l.note) + '</small>' : '') + '<div class="pr num"><b>' + rp(x.unit) + '</b></div></div></div><div style="text-align:right"><div class="stepper"><button data-a="dec" data-k="' + esc(x.l.key) + '" aria-label="Kurangi">−</button><span>' + x.l.qty + '</span><button data-a="inc" data-k="' + esc(x.l.key) + '" aria-label="Tambah">+</button></div><div class="num" style="font-size:12px;margin-top:4px;font-weight:800">' + rp(x.unit * x.l.qty) + '</div></div></div>';
     }).join('');
     var T = S.tebus || {};
     if (T.enabled && (T.items || []).length) {
@@ -302,16 +308,29 @@ function openProduct(id) {
   var h = mHead(esc(p.name)) + '<div class="pm-top">' + artHtml(p) + '<div><span class="tag-g">' + esc(p.cat) + '</span><div class="pr" style="margin-top:6px;font-size:18px" id="pm-price">' + priceHtml(p) + '</div><div class="muted" style="font-size:12px">' + (p.sold > 0 ? 'Terjual ' + p.sold + ' · ' : '') + (stockOf(p) === Infinity ? 'Stok tersedia' : 'Sisa ' + p.stock) + '</div></div></div>';
   if (flashLive(p)) h += '<div class="notice" style="margin-top:12px">⚡ Harga flash sale berlaku sampai ' + new Date(p.flash.until).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Pontianak' }) + ' WIB</div>';
   h += '<p style="margin-top:12px;white-space:pre-line">' + esc(p.desc) + '</p>';
-  if (p.prep.length) h += '<div class="box"><h3 class="sub">Pilih potongan</h3>' + p.prep.map(function (o, i) { return '<label class="opt"><input type="radio" name="pm-prep" value="' + esc(o.name) + '"' + (i === 0 ? ' checked' : '') + '><span><b>' + esc(o.name) + '</b><small>' + (o.fee ? '+' + rp(o.fee) : 'Gratis') + '</small></span></label>'; }).join('') + '</div>';
+  if (p.size) h += '<div class="notice" style="margin-top:10px"><b>Ukuran / berat:</b> ' + esc(p.size) + '</div>';
+  if (nz(p.minQty) > 0) h += '<div class="notice" style="margin-top:10px"><b>Minimal pesan:</b> ' + p.minQty + (isSvc(p) ? ' (paling lambat H-1)' : '') + '</div>';
+  if ((p.tiers || []).length) h += '<div class="box"><h3 class="sub">Diskon beli banyak</h3><table class="t"><tbody>' + p.tiers.map(function (t) { return '<tr><td>Beli ' + t.min + ' atau lebih</td><td class="r"><b>hemat ' + t.pct + '%</b></td></tr>'; }).join('') + '</tbody></table></div>';
+  if (p.prep.length) h += '<div class="box"><h3 class="sub">' + (isSvc(p) ? 'Pilih paket menu' : 'Pilih potongan') + '</h3>' + p.prep.map(function (o, i) { return '<label class="opt"><input type="radio" name="pm-prep" value="' + esc(o.name) + '"' + (i === 0 ? ' checked' : '') + '><span><b>' + esc(o.name) + '</b><small>' + (o.fee ? '+' + rp(o.fee) : 'Gratis') + '</small></span></label>'; }).join('') + '</div>';
   if (p.packs.length) h += '<div class="box"><h3 class="sub">Pilih kemasan</h3>' + p.packs.map(function (o, i) { return '<label class="opt"><input type="radio" name="pm-pack" value="' + esc(o.name) + '"' + (i === 0 ? ' checked' : '') + '><span><b>' + esc(o.name) + '</b><small>' + (o.fee ? '+' + rp(o.fee) : 'Gratis') + '</small></span></label>'; }).join('') + '</div>';
-  h += '<div class="field"><label for="pm-note">Catatan (opsional)</label><input id="pm-note" maxlength="200" placeholder="Mis. ikan dipotong 4 bagian"></div>';
+  if (p.reqList) h += '<div class="box"><h3 class="sub">Daftar request Anda</h3><p class="muted" style="margin:0 0 8px;font-size:12.5px">Tulis lauk atau sayur yang diinginkan beserta jumlah porsinya. Harga akhir dikonfirmasi lewat WhatsApp.</p><div id="pm-req">' + reqRow() + reqRow() + reqRow() + '</div><button class="btn btn-ghost btn-sm" data-a="reqadd" style="margin-top:8px">+ Tambah item</button><div class="muted" style="margin-top:8px">Total: <b id="pm-reqtot">0</b> porsi</div></div><div class="field"><label for="pm-note">Catatan tambahan (opsional)</label><input id="pm-note" maxlength="100" placeholder="Mis. tidak pedas, tanpa santan"></div>';
+  else h += '<div class="field"><label for="pm-note">Catatan (opsional)</label><input id="pm-note" maxlength="200" placeholder="Mis. ikan dipotong 4 bagian"></div>';
   var out = stockOf(p) === 0 || !St.S.storeOpen;
-  h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px"><div class="stepper"><button data-a="pmq" data-d="-1" aria-label="Kurangi">−</button><span id="pm-q">1</span><button data-a="pmq" data-d="1" aria-label="Tambah">+</button></div><button class="btn btn-hot" style="flex:1" data-a="pmadd" data-id="' + esc(p.id) + '"' + (out ? ' disabled' : '') + '>' + (out ? 'Tidak tersedia' : 'Tambah ke keranjang') + '</button></div>';
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px">' + (p.reqList ? '<span id="pm-q" hidden>1</span>' : '<div class="stepper"><button data-a="pmq" data-d="-1" aria-label="Kurangi">−</button><span id="pm-q">' + Math.max(1, nz(p.minQty)) + '</span><button data-a="pmq" data-d="1" aria-label="Tambah">+</button></div>') + '<button class="btn btn-hot" style="flex:1" data-a="pmadd" data-id="' + esc(p.id) + '"' + (out ? ' disabled' : '') + '>' + (out ? 'Tidak tersedia' : 'Tambah ke keranjang') + '</button></div>';
   openModal(h);
   pmPrice(p);
 }
+function reqRow() { return '<div class="req-row"><input class="inp" data-r="n" maxlength="60" placeholder="Nama lauk / sayur"><input class="inp" data-r="q" type="number" min="1" max="999" inputmode="numeric" placeholder="Porsi"></div>'; }
+function reqCollect() {
+  var rows = [], tot = 0; document.querySelectorAll('#pm-req .req-row').forEach(function (r) { var n = r.querySelector('[data-r=n]').value.trim(), q = Math.floor(nz(r.querySelector('[data-r=q]').value)); if (n && q > 0) { rows.push(n + ' x ' + q); tot += q; } });
+  return { text: rows.join('; '), tot: tot };
+}
 function pmSel() { var a = document.querySelector('input[name="pm-prep"]:checked'), b = document.querySelector('input[name="pm-pack"]:checked'); return { prep: a ? a.value : '', pack: b ? b.value : '' }; }
-function pmPrice(p) { var s = pmSel(), q = +$('pm-q').textContent || 1, u = basePrice(p) + optFee(p.prep, s.prep) + optFee(p.packs, s.pack), e = $('pm-price'); if (e) e.innerHTML = '<span class="num"><b>' + rp(u) + '</b></span>' + (q > 1 ? ' <span class="muted" style="font-size:12px">x ' + q + ' = ' + rp(u * q) + '</span>' : ''); }
+function pmPrice(p) {
+  var s = pmSel(), rc = p.reqList ? reqCollect() : null, q = rc ? Math.max(1, rc.tot) : (+$('pm-q').textContent || 1), rt = $('pm-reqtot'); if (rt && rc) rt.textContent = rc.tot;
+  var u0 = basePrice(p) + optFee(p.prep, s.prep) + optFee(p.packs, s.pack), pct = tierPct(p.tiers, q), u = pct ? Math.round(u0 * (1 - pct / 100)) : u0, e = $('pm-price');
+  if (e) e.innerHTML = '<span class="num"><b>' + rp(u) + '</b></span>' + (pct ? ' <span class="muted" style="font-size:12px"><s>' + rp(u0) + '</s> hemat ' + pct + '%</span>' : '') + (q > 1 ? ' <span class="muted" style="font-size:12px">x ' + q + ' = ' + rp(u * q) + '</span>' : '');
+}
 
 function openVouchers() {
   var vs = St.S.vouchers || [], h = mHead('Voucher untuk Anda');
@@ -348,6 +367,7 @@ function readForm() {
 }
 function validateCheckout(t) {
   var f = St.form, D = St.S.delivery;
+  var mq = minQtyErr(); if (mq) return mq;
   if (!String(f.name || '').trim()) return 'Isi nama Anda.';
   if (normWa(f.wa).length < 9) return 'Isi nomor WhatsApp dengan benar.';
   if (!f.method) return 'Pilih cara menerima pesanan.';
@@ -371,7 +391,7 @@ function submitOrder() {
   if (e) { $('f-err').textContent = e; return; }
   if (!St.key) St.key = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   St.busy = true; renderDrawer();
-  var body = { action: 'order', key: St.key, name: f.name.trim(), wa: normWa(f.wa), method: f.method, courier: f.courier || '', zone: f.zone || '', date: f.date || '', slot: f.slot || '', address: (f.address || '').trim(), maps: (f.maps || '').trim(), payment: f.payment, note: ((hasCatering() ? cateringNote(f) : '') + (f.note || '')).trim(), voucher: t.voucher ? t.voucher.code : '', tebus: St.tebusSel.slice(), items: St.cart.map(function (l) { return { id: l.id, prep: l.prep, pack: l.pack, qty: l.qty, note: l.note }; }) };
+  var body = { action: 'order', key: St.key, name: f.name.trim(), wa: normWa(f.wa), method: f.method, courier: f.courier || '', zone: f.zone || '', date: f.date || '', slot: f.slot || '', address: (f.address || '').trim(), maps: (f.maps || '').trim(), payment: f.payment, note: (f.note || '').trim(), cdate: hasCatering() ? (f.cdate || '') : '', ctime: hasCatering() ? (f.ctime || '') : '', voucher: t.voucher ? t.voucher.code : '', tebus: St.tebusSel.slice(), items: St.cart.map(function (l) { return { id: l.id, prep: l.prep, pack: l.pack, qty: l.qty, note: l.note }; }) };
   API.post(body).then(function (r) {
     St.busy = false;
     if (!r.ok) {
@@ -427,7 +447,7 @@ function onStoreClick(e) {
     case 'closem': closeModal(); break;
     case 'inc': setQty(el.getAttribute('data-k'), 1); break;
     case 'dec': setQty(el.getAttribute('data-k'), -1); break;
-    case 'toCheckout': St.stage = 'checkout'; if (!St.form.method) { var D = St.S.delivery; St.form.method = D.scheduled.enabled ? 'scheduled' : D.courier.enabled ? 'courier' : 'pickup'; } renderDrawer(); break;
+    case 'toCheckout': var mq = minQtyErr(); if (mq) { toast(mq, true); break; } St.stage = 'checkout'; if (!St.form.method) { var D = St.S.delivery; St.form.method = D.scheduled.enabled ? 'scheduled' : D.courier.enabled ? 'courier' : 'pickup'; } renderDrawer(); break;
     case 'toCart': readForm(); St.stage = 'cart'; renderDrawer(); break;
     case 'submit': submitOrder(); break;
     case 'applyV': readForm(); renderDrawer(); break;
@@ -437,8 +457,11 @@ function onStoreClick(e) {
     case 'doTrack': trackNow($('t-id').value, $('t-wa').value); break;
     case 'trackMine': $('t-id').value = id; $('t-wa').value = el.getAttribute('data-wa'); trackNow(id, el.getAttribute('data-wa')); break;
     case 'complain': sendComplaint(); break;
-    case 'pmq': var q = $('pm-q'); q.textContent = Math.max(1, Math.min(99, (+q.textContent || 1) + +el.getAttribute('data-d'))); pmPrice(prodById(document.querySelector('[data-a=pmadd]').getAttribute('data-id'))); break;
-    case 'pmadd': var s = pmSel(); addToCart(id, s.prep, s.pack, +$('pm-q').textContent || 1, $('pm-note').value.trim()); closeModal(); break;
+    case 'pmq': var q = $('pm-q'); q.textContent = Math.max(1, Math.min(999, (+q.textContent || 1) + +el.getAttribute('data-d'))); pmPrice(prodById(document.querySelector('[data-a=pmadd]').getAttribute('data-id'))); break;
+    case 'pmadd': var s = pmSel(), pp = prodById(id);
+      if (pp && pp.reqList) { var rq = reqCollect(); if (!rq.tot) { toast('Isi minimal satu item request beserta jumlah porsinya.', true); break; } var tx = rq.text + ($('pm-note').value.trim() ? '. Catatan: ' + $('pm-note').value.trim() : ''); addToCart(id, s.prep, s.pack, rq.tot, tx.slice(0, 700), true); closeModal(); break; }
+      addToCart(id, s.prep, s.pack, +$('pm-q').textContent || 1, $('pm-note').value.trim()); closeModal(); break;
+    case 'reqadd': $('pm-req').insertAdjacentHTML('beforeend', reqRow()); break;
   }
 }
 function onStoreChange(e) {
@@ -458,5 +481,5 @@ function bindStore() {
   document.body.addEventListener('change', function (e) { if (e.target.closest('#modal')) onStoreChange(e); });
   v.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.id === 'q') { St.q = e.target.value; renderGrid(); scrollTo_('katalog'); } });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
-  v.addEventListener('input', function (e) { if (e.target.closest('#drawer') && e.target.hasAttribute('data-f') && e.target.type !== 'radio' && e.target.tagName !== 'SELECT') readForm(); });
+  v.addEventListener('input', function (e) { if (e.target.closest && e.target.closest('#pm-req')) { var pb2 = document.querySelector('[data-a=pmadd]'); if (pb2) pmPrice(prodById(pb2.getAttribute('data-id'))); return; } if (e.target.closest('#drawer') && e.target.hasAttribute('data-f') && e.target.type !== 'radio' && e.target.tagName !== 'SELECT') readForm(); });
 }

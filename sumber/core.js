@@ -107,6 +107,10 @@ function parseOpts(t) {
     return { name: s, fee: 0 };
   });
 }
+function parseTiers(t) {
+  return String(t || '').split(/\r?\n|;/).map(function (s) { var m = s.trim().match(/^(\d+)\s*[=:]\s*(\d+(?:[.,]\d+)?)\s*%?/); return m ? { min: +m[1], pct: Math.min(90, parseFloat(m[2].replace(',', '.'))) } : null; }).filter(function (x) { return x && x.min > 0 && x.pct > 0; }).sort(function (a, b) { return a.min - b.min; });
+}
+function tierPct(tiers, qty) { var p = 0; (tiers || []).forEach(function (t) { if (qty >= t.min) p = t.pct; }); return p; }
 function flashEnd(v) {
   var m = String(v || '').trim().match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
   return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4] - 7, +m[5]) : 0;
@@ -139,7 +143,7 @@ var Demo = (function () {
     var t = Date.now() + 7 * 36e5;
     return SEED.map(function (s, i) {
       var fl = s.flash;
-      return { id: s.id, name: s.name, cat: s.cat, price: s.price, oldPrice: s.oldPrice || 0, hpp: s.hpp, kemas: s.kemas, stock: s.stock == null ? null : s.stock, image: '', emoji: s.emoji, desc: s.desc, badge: s.badge, prepText: s.prep, packText: s.packs, flashPrice: fl ? fl.price : 0, flashUntil: fl ? new Date(t + fl.hours * 36e5).toISOString().slice(0, 16) : '', flashQuota: fl ? fl.quota : 0, active: true, order: i + 1 };
+      return { id: s.id, name: s.name, cat: s.cat, price: s.price, oldPrice: s.oldPrice || 0, hpp: s.hpp, kemas: s.kemas, stock: s.stock == null ? null : s.stock, image: '', emoji: s.emoji, desc: s.desc, badge: s.badge, prepText: s.prep, packText: s.packs, size: s.size || '', tiers: s.tiers || '', minQty: s.minQty || 0, reqList: !!s.reqList, flashPrice: fl ? fl.price : 0, flashUntil: fl ? new Date(t + fl.hours * 36e5).toISOString().slice(0, 16) : '', flashQuota: fl ? fl.quota : 0, active: true, order: i + 1 };
     });
   }
   function load() {
@@ -156,8 +160,8 @@ var Demo = (function () {
   function flashOnP(p, now) { return nz(p.flashPrice) > 0 && flashEnd(p.flashUntil) > now; }
   function pub(p, sm, admin) {
     var now = Date.now(), on = flashOnP(p, now);
-    var o = { id: p.id, name: p.name, cat: p.cat, price: p.price, oldPrice: p.oldPrice, stock: p.stock, image: p.image, emoji: p.emoji, desc: p.desc, badge: p.badge, prep: parseOpts(p.prepText), packs: parseOpts(p.packText), flash: on ? { price: p.flashPrice, until: flashEnd(p.flashUntil), quota: p.flashQuota } : null, active: p.active, order: p.order, sold: sm[p.id] || 0 };
-    if (admin) { o.hpp = p.hpp; o.kemas = p.kemas; o.prepText = p.prepText; o.packText = p.packText; o.flashPrice = p.flashPrice; o.flashUntil = p.flashUntil; o.flashQuota = p.flashQuota; }
+    var o = { id: p.id, name: p.name, cat: p.cat, price: p.price, oldPrice: p.oldPrice, stock: p.stock, image: p.image, emoji: p.emoji, desc: p.desc, badge: p.badge, size: p.size, tiers: parseTiers(p.tiers), minQty: p.minQty, reqList: p.reqList, prep: parseOpts(p.prepText), packs: parseOpts(p.packText), flash: on ? { price: p.flashPrice, until: flashEnd(p.flashUntil), quota: p.flashQuota } : null, active: p.active, order: p.order, sold: sm[p.id] || 0 };
+    if (admin) { o.tiersText = p.tiers; o.hpp = p.hpp; o.kemas = p.kemas; o.prepText = p.prepText; o.packText = p.packText; o.flashPrice = p.flashPrice; o.flashUntil = p.flashUntil; o.flashQuota = p.flashQuota; }
     return o;
   }
   function pubSettings(S) {
@@ -185,13 +189,23 @@ var Demo = (function () {
     for (i = 0; i < d.items.length; i++) {
       var rq = d.items[i], q = Math.floor(nz(rq.qty)), p = D.products.filter(function (x) { return x.id === rq.id && x.active; })[0];
       if (!p) return err('Ada produk yang sudah tidak dijual. Muat ulang halaman.');
-      if (q < 1 || q > 99) return err('Jumlah barang tidak valid.');
+      if (q < 1 || q > 999) return err('Jumlah barang tidak valid.');
+      if (p.reqList && !String(rq.note || '').trim()) return err('Isi daftar request untuk "' + p.name + '".');
       var pl = parseOpts(p.prepText), kl = parseOpts(p.packText), prep = '', pack = '', fee = 0, o1, o2;
       if (pl.length) { o1 = pl.filter(function (x) { return x.name === (rq.prep || pl[0].name); })[0]; if (!o1) return err('Pilihan potongan "' + p.name + '" sudah berubah. Muat ulang halaman.'); prep = o1.name; fee += o1.fee; }
       if (kl.length) { o2 = kl.filter(function (x) { return x.name === (rq.pack || kl[0].name); })[0]; if (!o2) return err('Pilihan kemasan "' + p.name + '" sudah berubah. Muat ulang halaman.'); pack = o2.name; fee += o2.fee; }
       var unit = (flashOnP(p, now) ? p.flashPrice : p.price) + fee;
-      lines.push({ id: p.id, name: p.name, price: unit, qty: q, prep: prep, pack: pack, note: String(rq.note || '').slice(0, 200), cost: nz(p.hpp) + nz(p.kemas) });
+      lines.push({ id: p.id, name: p.name, price: unit, qty: q, prep: prep, pack: pack, note: String(rq.note || '').slice(0, p.reqList ? 700 : 200), cost: nz(p.hpp) + nz(p.kemas) });
       sub += unit * q; need[p.id] = (need[p.id] || 0) + q;
+    }
+    for (var pid0 in need) { var pr0 = D.products.filter(function (x) { return x.id === pid0; })[0]; if (nz(pr0.minQty) > 0 && need[pid0] < pr0.minQty) return err('"' + pr0.name + '" minimal pesan ' + pr0.minQty + '.'); }
+    sub = 0;
+    lines.forEach(function (l) { var pr1 = D.products.filter(function (x) { return x.id === l.id; })[0], pct = tierPct(parseTiers(pr1.tiers), need[l.id]); if (pct > 0) { l.list = l.price; l.price = Math.round(l.price * (1 - pct / 100)); l.tier = pct; } sub += l.price * l.qty; });
+    var isCat = lines.some(function (l) { var p2 = D.products.filter(function (x) { return x.id === l.id; })[0]; return /^Katering/.test(p2.cat || ''); }), cnote = '';
+    if (isCat) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(String(d.cdate || ''))) return err('Isi tanggal katering dibutuhkan.');
+      if (d.cdate < addDays(todayWIB(), 1)) return err('Pesanan katering minimal H-1. Pilih tanggal mulai besok atau setelahnya.');
+      cnote = '[KATERING] Dibutuhkan: ' + d.cdate.split('-').reverse().join('/') + (/^\d{2}:\d{2}$/.test(String(d.ctime || '')) ? ' jam ' + d.ctime : '') + '. ';
     }
     for (var pid in need) { var pr = D.products.filter(function (x) { return x.id === pid; })[0]; if (pr.stock !== null && need[pid] > pr.stock) return err('Stok "' + pr.name + '" tersisa ' + pr.stock + '.'); }
     var mine = sigOf(lines);
@@ -219,6 +233,7 @@ var Demo = (function () {
     } else if (m === 'scheduled') {
       var sc = Dl.scheduled, z = sc.zones.filter(function (x) { return x.name === d.zone; })[0], sl = sc.slots.filter(function (x) { return x.name === d.slot; })[0];
       if (!sc.enabled || !z || !sl) return err('Pilih rute dan sesi antar.'); if (!d.address) return err('Isi alamat pengiriman.');
+      if (isCat && d.date < addDays(todayWIB(), 1)) return err('Antar katering minimal H-1. Pilih tanggal mulai besok.');
       if (now >= cutoffAt(d.date, sl)) return err('Batas pesan untuk ' + sl.name + ' sudah lewat. Pilih sesi atau tanggal lain.');
       if (nz(sl.capacity) > 0 && (usage()[d.date + '|' + sl.name] || 0) >= nz(sl.capacity)) return err(sl.name + ' sudah penuh. Pilih sesi lain.');
       method = sc.label; zone = z.name; slot = sl.name; date = d.date; ship = (nz(sc.freeFrom) > 0 && sub >= nz(sc.freeFrom)) ? 0 : nz(z.fee);
@@ -232,7 +247,7 @@ var Demo = (function () {
     var margin = lineMargin - discount + (m === 'scheduled' ? ship - nz((S.finance || {}).courierCost) : 0);
     var day = todayWIB().slice(2).replace(/-/g, ''), pre = 'SK-' + day + '-';
     var seq = D.orders.reduce(function (mx, o) { return o.id.indexOf(pre) === 0 ? Math.max(mx, parseInt(o.id.slice(pre.length), 10) || 0) : mx; }, 0) + 1;
-    var o = { id: pre + ('00' + seq).slice(-3), time: new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }), name: name, wa: wa, method: method, zone: zone, address: d.address || '', maps: d.maps || '', date: date, slot: slot, summary: lines.map(lineText).join('; '), subtotal: sub, discount: discount, voucher: voucher ? voucher.code : '', shipping: ship, total: sub + ship - discount, payment: pay.name, note: d.note || '', status: 'Baru', items: lines, margin: Math.round(margin), key: d.key, ts: now };
+    var o = { id: pre + ('00' + seq).slice(-3), time: new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }), name: name, wa: wa, method: method, zone: zone, address: d.address || '', maps: d.maps || '', date: date, slot: slot, summary: lines.map(lineText).join('; '), subtotal: sub, discount: discount, voucher: voucher ? voucher.code : '', shipping: ship, total: sub + ship - discount, payment: pay.name, note: (cnote + (d.note || '')).slice(0, 500), status: 'Baru', items: lines, margin: Math.round(margin), key: d.key, ts: now };
     D.orders.unshift(o); save(); return { ok: true, order: custOrder(o) };
   }
 
@@ -263,7 +278,7 @@ var Demo = (function () {
       var pr = r.product; if (!String(pr.name || '').trim()) return err('Nama produk wajib diisi.');
       if (nz(pr.flashPrice) > 0 && !flashEnd(pr.flashUntil)) return err('Isi tanggal dan jam berakhir flash sale.');
       var cur = D.products.filter(function (x) { return x.id === pr.id; })[0];
-      var rec = { id: pr.id, name: String(pr.name).trim(), cat: String(pr.cat || 'Lainnya').trim(), price: Math.floor(nz(pr.price)), oldPrice: Math.floor(nz(pr.oldPrice)), hpp: Math.round(nz(pr.hpp)), kemas: Math.round(nz(pr.kemas)), stock: (pr.stock === '' || pr.stock == null) ? null : Math.floor(nz(pr.stock)), image: pr.image || '', emoji: pr.emoji || '', desc: pr.desc || '', badge: pr.badge || '', prepText: pr.prepText || '', packText: pr.packText || '', flashPrice: nz(pr.flashPrice) > 0 ? Math.floor(nz(pr.flashPrice)) : 0, flashUntil: nz(pr.flashPrice) > 0 ? pr.flashUntil : '', flashQuota: nz(pr.flashQuota), active: pr.active !== false, order: pr.order ? Math.floor(nz(pr.order)) : (cur ? cur.order : D.products.length + 1) };
+      var rec = { id: pr.id, name: String(pr.name).trim(), cat: String(pr.cat || 'Lainnya').trim(), price: Math.floor(nz(pr.price)), oldPrice: Math.floor(nz(pr.oldPrice)), hpp: Math.round(nz(pr.hpp)), kemas: Math.round(nz(pr.kemas)), stock: (pr.stock === '' || pr.stock == null) ? null : Math.floor(nz(pr.stock)), image: pr.image || '', emoji: pr.emoji || '', desc: pr.desc || '', badge: pr.badge || '', prepText: pr.prepText || '', packText: pr.packText || '', flashPrice: nz(pr.flashPrice) > 0 ? Math.floor(nz(pr.flashPrice)) : 0, flashUntil: nz(pr.flashPrice) > 0 ? pr.flashUntil : '', flashQuota: nz(pr.flashQuota), size: String(pr.size || '').slice(0, 120), tiers: String(pr.tiersText != null ? pr.tiersText : pr.tiers || '').slice(0, 200), minQty: Math.max(0, Math.floor(nz(pr.minQty))), reqList: !!pr.reqList, active: pr.active !== false, order: pr.order ? Math.floor(nz(pr.order)) : (cur ? cur.order : D.products.length + 1) };
       if (cur) Object.assign(cur, rec); else { rec.id = 'P' + ('0' + (D.products.reduce(function (m, x) { return Math.max(m, parseInt(x.id.replace(/\D/g, ''), 10) || 0); }, 0) + 1)).slice(-2); D.products.push(rec); }
       save(); return { ok: true, id: rec.id };
     }

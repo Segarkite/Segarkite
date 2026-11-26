@@ -425,6 +425,10 @@ table.t input { width: 100%; min-width: 84px; padding: 6px 8px; border: 1px soli
 .svc-t{font-style:normal;font-weight:800;font-size:10px;letter-spacing:.06em;background:#0B6B63;color:#fff;border-radius:99px;padding:1px 7px;margin-right:4px}
 @media(max-width:760px){.svcs{grid-template-columns:1fr 1fr}}
 
+.sz{font-size:11.5px;color:#5b6657;margin:2px 0 4px;font-weight:600}
+.tier-chip{display:inline-block;font-size:11px;font-weight:700;color:#0B6B63;background:rgba(11,107,99,.1);border-radius:99px;padding:2px 9px;margin-top:6px}
+.req-row{display:grid;grid-template-columns:1fr 84px;gap:6px;margin-bottom:6px}
+
 </style>
 <div id="demo-bar" class="demo-bar" hidden></div>
 <div id="view-store" hidden></div>
@@ -816,7 +820,7 @@ var DEFAULT_S = {
     },
     {
      "id": "R03",
-     "name": "Nasi Box Event 20 box (contoh)",
+     "name": "Nasi Box Hemat Rp10.000, 20 box (contoh)",
      "type": "event",
      "unit": "box",
      "yield": 20,
@@ -825,57 +829,198 @@ var DEFAULT_S = {
        "name": "Beras",
        "buyPrice": 15000,
        "buyQty": 1000,
-       "useQty": 3000,
+       "useQty": 2400,
        "shrink": 0
       },
       {
-       "name": "Ayam",
+       "name": "Tempe/tahu goreng",
+       "buyPrice": 700,
+       "buyQty": 1,
+       "useQty": 20,
+       "shrink": 0
+      },
+      {
+       "name": "Sayur tumis",
+       "buyPrice": 20000,
+       "buyQty": 1000,
+       "useQty": 600,
+       "shrink": 15
+      },
+      {
+       "name": "Sambal",
+       "buyPrice": 30000,
+       "buyQty": 1000,
+       "useQty": 120,
+       "shrink": 0
+      }
+     ],
+     "laborMin": 60,
+     "workers": 2,
+     "extras": [
+      {
+       "name": "Minyak & gas",
+       "kind": "overhead",
+       "amount": 12000
+      },
+      {
+       "name": "Box + sendok",
+       "kind": "kemas",
+       "amount": 30000
+      },
+      {
+       "name": "BBM antar",
+       "kind": "transport",
+       "amount": 10000
+      }
+     ],
+     "ohHour": "",
+     "margin": 25,
+     "price": 0,
+     "productId": "P21"
+    },
+    {
+     "id": "R04",
+     "name": "Nasi Box Reguler Rp15.000, 20 box (contoh)",
+     "type": "event",
+     "unit": "box",
+     "yield": 20,
+     "materials": [
+      {
+       "name": "Beras",
+       "buyPrice": 15000,
+       "buyQty": 1000,
+       "useQty": 2800,
+       "shrink": 0
+      },
+      {
+       "name": "Ayam goreng 60 g",
        "buyPrice": 38000,
        "buyQty": 1000,
-       "useQty": 2000,
+       "useQty": 1200,
        "shrink": 10
       },
       {
-       "name": "Sayur",
+       "name": "Sayur tumis",
+       "buyPrice": 20000,
+       "buyQty": 1000,
+       "useQty": 800,
+       "shrink": 15
+      },
+      {
+       "name": "Tempe/tahu goreng",
+       "buyPrice": 500,
+       "buyQty": 1,
+       "useQty": 20,
+       "shrink": 0
+      },
+      {
+       "name": "Sambal",
+       "buyPrice": 30000,
+       "buyQty": 1000,
+       "useQty": 120,
+       "shrink": 0
+      }
+     ],
+     "laborMin": 75,
+     "workers": 2,
+     "extras": [
+      {
+       "name": "Minyak & gas",
+       "kind": "overhead",
+       "amount": 17500
+      },
+      {
+       "name": "Box + sendok",
+       "kind": "kemas",
+       "amount": 34000
+      },
+      {
+       "name": "BBM antar",
+       "kind": "transport",
+       "amount": 15000
+      }
+     ],
+     "ohHour": "",
+     "margin": 25,
+     "price": 0,
+     "productId": ""
+    },
+    {
+     "id": "R05",
+     "name": "Nasi Box Premium Rp20.000, 20 box (contoh)",
+     "type": "event",
+     "unit": "box",
+     "yield": 20,
+     "materials": [
+      {
+       "name": "Beras",
+       "buyPrice": 15000,
+       "buyQty": 1000,
+       "useQty": 3400,
+       "shrink": 0
+      },
+      {
+       "name": "Ayam/ikan 90 g",
+       "buyPrice": 40000,
+       "buyQty": 1000,
+       "useQty": 1800,
+       "shrink": 12
+      },
+      {
+       "name": "Sayur tumis",
        "buyPrice": 20000,
        "buyQty": 1000,
        "useQty": 1000,
        "shrink": 15
       },
       {
-       "name": "Sambal & lalapan",
+       "name": "Telur 1/2 butir",
+       "buyPrice": 2000,
+       "buyQty": 1,
+       "useQty": 10,
+       "shrink": 0
+      },
+      {
+       "name": "Tempe",
+       "buyPrice": 500,
+       "buyQty": 1,
+       "useQty": 20,
+       "shrink": 0
+      },
+      {
+       "name": "Sambal",
        "buyPrice": 30000,
        "buyQty": 1000,
-       "useQty": 600,
+       "useQty": 160,
        "shrink": 0
       }
      ],
-     "laborMin": 240,
-     "workers": 3,
+     "laborMin": 100,
+     "workers": 2,
      "extras": [
       {
-       "name": "Bumbu & minyak",
+       "name": "Minyak & gas",
        "kind": "overhead",
-       "amount": 40000
+       "amount": 22000
       },
       {
-       "name": "Box + sendok + tisu 20 set",
+       "name": "Box premium + sendok",
        "kind": "kemas",
        "amount": 50000
       },
       {
        "name": "BBM antar",
        "kind": "transport",
-       "amount": 30000
+       "amount": 15000
       }
      ],
      "ohHour": "",
-     "margin": 30,
+     "margin": 25,
      "price": 0,
-     "productId": "P21"
+     "productId": ""
     },
     {
-     "id": "R04",
+     "id": "R06",
      "name": "Prasmanan Event 30 pax (contoh)",
      "type": "event",
      "unit": "pax",
@@ -940,8 +1085,8 @@ var DEFAULT_S = {
      "productId": "P22"
     },
     {
-     "id": "R05",
-     "name": "Lauk Jadi Request 10 porsi (contoh)",
+     "id": "R07",
+     "name": "Lauk Jadi Request, 10 porsi (contoh)",
      "type": "katering",
      "unit": "porsi",
      "yield": 10,
@@ -977,7 +1122,7 @@ var DEFAULT_S = {
        "amount": 4000
       },
       {
-       "name": "Kotak thinwall sekali pakai 10",
+       "name": "Thinwall 10 pcs",
        "kind": "kemas",
        "amount": 15000
       }
@@ -986,6 +1131,47 @@ var DEFAULT_S = {
      "margin": 35,
      "price": 0,
      "productId": "P23"
+    },
+    {
+     "id": "R08",
+     "name": "Sayur Request, 10 porsi (contoh)",
+     "type": "katering",
+     "unit": "porsi",
+     "yield": 10,
+     "materials": [
+      {
+       "name": "Sayur segar",
+       "buyPrice": 20000,
+       "buyQty": 1000,
+       "useQty": 1500,
+       "shrink": 15
+      },
+      {
+       "name": "Bumbu & santan",
+       "buyPrice": 30000,
+       "buyQty": 1000,
+       "useQty": 300,
+       "shrink": 0
+      }
+     ],
+     "laborMin": 60,
+     "workers": 1,
+     "extras": [
+      {
+       "name": "Gas",
+       "kind": "overhead",
+       "amount": 3000
+      },
+      {
+       "name": "Thinwall 10 pcs",
+       "kind": "kemas",
+       "amount": 15000
+      }
+     ],
+     "ohHour": "",
+     "margin": 35,
+     "price": 0,
+     "productId": "P24"
     }
    ]
   }
@@ -1357,17 +1543,20 @@ var SEED = [
  },
  {
   "id": "P21",
-  "name": "Nasi Box Katering Event (per box, min. 20)",
+  "name": "Nasi Box Katering (per box, min. 20)",
   "cat": "Katering & Lauk Jadi",
-  "price": 35500,
+  "price": 10000,
   "oldPrice": 0,
-  "hpp": 20749,
-  "kemas": 4000,
+  "hpp": 5786,
+  "kemas": 2000,
   "emoji": "🍱",
   "badge": "Katering",
-  "desc": "Nasi, ayam, sayur, dan sambal dalam box. Pesan minimal 20 box, paling lambat H-1 sebelum acara. Menu bisa diganti sesuai request.",
-  "prep": "",
-  "packs": ""
+  "desc": "Nasi box dengan pilihan paket menu tetap: Hemat Rp10.000, Reguler Rp15.000, atau Premium Rp20.000. Pesan minimal 20 box, paling lambat H-1 sebelum acara. Paket lain (Rp25.000 dan seterusnya) bisa ditanyakan lewat WhatsApp.",
+  "prep": "Hemat Rp10.000 - nasi 120 g, tempe/tahu goreng, tumis sayur 35 g, sambal\nReguler Rp15.000 - nasi 140 g, ayam goreng 60 g, tumis sayur 40 g, tempe/tahu, sambal (+5000)\nPremium Rp20.000 - nasi 170 g, ayam/ikan 90 g, tumis sayur 50 g, telur 1/2, tempe, sambal (+10000)",
+  "packs": "",
+  "size": "Per box ±300-400 g (nasi 120-170 g, lauk 60-100 g, sayur 35-50 g, sambal)",
+  "tiers": "50=5%\n100=8%",
+  "minQty": 20
  },
  {
   "id": "P22",
@@ -1379,13 +1568,16 @@ var SEED = [
   "kemas": 3167,
   "emoji": "🍽️",
   "badge": "Katering",
-  "desc": "Prasmanan lengkap termasuk chafing dish dan penataan. Minimal 30 pax, pesan paling lambat H-1. Konfirmasi menu lewat WhatsApp.",
+  "desc": "Prasmanan lengkap termasuk chafing dish dan penataan. Pesan paling lambat H-1. Konfirmasi menu lewat WhatsApp.",
   "prep": "",
-  "packs": ""
+  "packs": "",
+  "size": "Per pax ±350-450 g (nasi 150 g, 2 lauk ±120 g, sayur 60 g, kerupuk)",
+  "tiers": "50=5%\n100=8%",
+  "minQty": 30
  },
  {
   "id": "P23",
-  "name": "Lauk Jadi Request Pelanggan (per porsi)",
+  "name": "Lauk Jadi Request (per porsi)",
   "cat": "Katering & Lauk Jadi",
   "price": 20500,
   "oldPrice": 0,
@@ -1393,9 +1585,29 @@ var SEED = [
   "kemas": 1500,
   "emoji": "🍛",
   "badge": "Request menu",
-  "desc": "Pilih lauk sendiri (ayam, ikan, daging, sayur). Pesan paling lambat H-1. Harga final dikonfirmasi lewat WhatsApp setelah menu dipastikan.",
+  "desc": "Tulis sendiri lauk yang diinginkan beserta jumlah porsinya. Pesan paling lambat H-1. Harga akhir dikonfirmasi lewat WhatsApp.",
   "prep": "",
-  "packs": ""
+  "packs": "",
+  "size": "Per porsi ±100-150 g (satu jenis lauk), dikemas thinwall 500 ml",
+  "tiers": "20=5%\n50=8%",
+  "reqList": true
+ },
+ {
+  "id": "P24",
+  "name": "Sayur Request (per porsi)",
+  "cat": "Katering & Lauk Jadi",
+  "price": 13000,
+  "oldPrice": 0,
+  "hpp": 6829,
+  "kemas": 1500,
+  "emoji": "🥗",
+  "badge": "Request menu",
+  "desc": "Tulis sendiri sayur yang diinginkan beserta jumlah porsinya. Pesan paling lambat H-1. Harga akhir dikonfirmasi lewat WhatsApp.",
+  "prep": "",
+  "packs": "",
+  "size": "Per porsi ±150 g (sayur matang), dikemas thinwall 500 ml",
+  "tiers": "20=5%\n50=8%",
+  "reqList": true
  }
 ];
 var LOGO_SM = "data:image/webp;base64,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";
@@ -1504,6 +1716,10 @@ function parseOpts(t) {
     return { name: s, fee: 0 };
   });
 }
+function parseTiers(t) {
+  return String(t || '').split(/\r?\n|;/).map(function (s) { var m = s.trim().match(/^(\d+)\s*[=:]\s*(\d+(?:[.,]\d+)?)\s*%?/); return m ? { min: +m[1], pct: Math.min(90, parseFloat(m[2].replace(',', '.'))) } : null; }).filter(function (x) { return x && x.min > 0 && x.pct > 0; }).sort(function (a, b) { return a.min - b.min; });
+}
+function tierPct(tiers, qty) { var p = 0; (tiers || []).forEach(function (t) { if (qty >= t.min) p = t.pct; }); return p; }
 function flashEnd(v) {
   var m = String(v || '').trim().match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
   return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4] - 7, +m[5]) : 0;
@@ -1536,7 +1752,7 @@ var Demo = (function () {
     var t = Date.now() + 7 * 36e5;
     return SEED.map(function (s, i) {
       var fl = s.flash;
-      return { id: s.id, name: s.name, cat: s.cat, price: s.price, oldPrice: s.oldPrice || 0, hpp: s.hpp, kemas: s.kemas, stock: s.stock == null ? null : s.stock, image: '', emoji: s.emoji, desc: s.desc, badge: s.badge, prepText: s.prep, packText: s.packs, flashPrice: fl ? fl.price : 0, flashUntil: fl ? new Date(t + fl.hours * 36e5).toISOString().slice(0, 16) : '', flashQuota: fl ? fl.quota : 0, active: true, order: i + 1 };
+      return { id: s.id, name: s.name, cat: s.cat, price: s.price, oldPrice: s.oldPrice || 0, hpp: s.hpp, kemas: s.kemas, stock: s.stock == null ? null : s.stock, image: '', emoji: s.emoji, desc: s.desc, badge: s.badge, prepText: s.prep, packText: s.packs, size: s.size || '', tiers: s.tiers || '', minQty: s.minQty || 0, reqList: !!s.reqList, flashPrice: fl ? fl.price : 0, flashUntil: fl ? new Date(t + fl.hours * 36e5).toISOString().slice(0, 16) : '', flashQuota: fl ? fl.quota : 0, active: true, order: i + 1 };
     });
   }
   function load() {
@@ -1553,8 +1769,8 @@ var Demo = (function () {
   function flashOnP(p, now) { return nz(p.flashPrice) > 0 && flashEnd(p.flashUntil) > now; }
   function pub(p, sm, admin) {
     var now = Date.now(), on = flashOnP(p, now);
-    var o = { id: p.id, name: p.name, cat: p.cat, price: p.price, oldPrice: p.oldPrice, stock: p.stock, image: p.image, emoji: p.emoji, desc: p.desc, badge: p.badge, prep: parseOpts(p.prepText), packs: parseOpts(p.packText), flash: on ? { price: p.flashPrice, until: flashEnd(p.flashUntil), quota: p.flashQuota } : null, active: p.active, order: p.order, sold: sm[p.id] || 0 };
-    if (admin) { o.hpp = p.hpp; o.kemas = p.kemas; o.prepText = p.prepText; o.packText = p.packText; o.flashPrice = p.flashPrice; o.flashUntil = p.flashUntil; o.flashQuota = p.flashQuota; }
+    var o = { id: p.id, name: p.name, cat: p.cat, price: p.price, oldPrice: p.oldPrice, stock: p.stock, image: p.image, emoji: p.emoji, desc: p.desc, badge: p.badge, size: p.size, tiers: parseTiers(p.tiers), minQty: p.minQty, reqList: p.reqList, prep: parseOpts(p.prepText), packs: parseOpts(p.packText), flash: on ? { price: p.flashPrice, until: flashEnd(p.flashUntil), quota: p.flashQuota } : null, active: p.active, order: p.order, sold: sm[p.id] || 0 };
+    if (admin) { o.tiersText = p.tiers; o.hpp = p.hpp; o.kemas = p.kemas; o.prepText = p.prepText; o.packText = p.packText; o.flashPrice = p.flashPrice; o.flashUntil = p.flashUntil; o.flashQuota = p.flashQuota; }
     return o;
   }
   function pubSettings(S) {
@@ -1582,13 +1798,23 @@ var Demo = (function () {
     for (i = 0; i < d.items.length; i++) {
       var rq = d.items[i], q = Math.floor(nz(rq.qty)), p = D.products.filter(function (x) { return x.id === rq.id && x.active; })[0];
       if (!p) return err('Ada produk yang sudah tidak dijual. Muat ulang halaman.');
-      if (q < 1 || q > 99) return err('Jumlah barang tidak valid.');
+      if (q < 1 || q > 999) return err('Jumlah barang tidak valid.');
+      if (p.reqList && !String(rq.note || '').trim()) return err('Isi daftar request untuk "' + p.name + '".');
       var pl = parseOpts(p.prepText), kl = parseOpts(p.packText), prep = '', pack = '', fee = 0, o1, o2;
       if (pl.length) { o1 = pl.filter(function (x) { return x.name === (rq.prep || pl[0].name); })[0]; if (!o1) return err('Pilihan potongan "' + p.name + '" sudah berubah. Muat ulang halaman.'); prep = o1.name; fee += o1.fee; }
       if (kl.length) { o2 = kl.filter(function (x) { return x.name === (rq.pack || kl[0].name); })[0]; if (!o2) return err('Pilihan kemasan "' + p.name + '" sudah berubah. Muat ulang halaman.'); pack = o2.name; fee += o2.fee; }
       var unit = (flashOnP(p, now) ? p.flashPrice : p.price) + fee;
-      lines.push({ id: p.id, name: p.name, price: unit, qty: q, prep: prep, pack: pack, note: String(rq.note || '').slice(0, 200), cost: nz(p.hpp) + nz(p.kemas) });
+      lines.push({ id: p.id, name: p.name, price: unit, qty: q, prep: prep, pack: pack, note: String(rq.note || '').slice(0, p.reqList ? 700 : 200), cost: nz(p.hpp) + nz(p.kemas) });
       sub += unit * q; need[p.id] = (need[p.id] || 0) + q;
+    }
+    for (var pid0 in need) { var pr0 = D.products.filter(function (x) { return x.id === pid0; })[0]; if (nz(pr0.minQty) > 0 && need[pid0] < pr0.minQty) return err('"' + pr0.name + '" minimal pesan ' + pr0.minQty + '.'); }
+    sub = 0;
+    lines.forEach(function (l) { var pr1 = D.products.filter(function (x) { return x.id === l.id; })[0], pct = tierPct(parseTiers(pr1.tiers), need[l.id]); if (pct > 0) { l.list = l.price; l.price = Math.round(l.price * (1 - pct / 100)); l.tier = pct; } sub += l.price * l.qty; });
+    var isCat = lines.some(function (l) { var p2 = D.products.filter(function (x) { return x.id === l.id; })[0]; return /^Katering/.test(p2.cat || ''); }), cnote = '';
+    if (isCat) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(String(d.cdate || ''))) return err('Isi tanggal katering dibutuhkan.');
+      if (d.cdate < addDays(todayWIB(), 1)) return err('Pesanan katering minimal H-1. Pilih tanggal mulai besok atau setelahnya.');
+      cnote = '[KATERING] Dibutuhkan: ' + d.cdate.split('-').reverse().join('/') + (/^\d{2}:\d{2}$/.test(String(d.ctime || '')) ? ' jam ' + d.ctime : '') + '. ';
     }
     for (var pid in need) { var pr = D.products.filter(function (x) { return x.id === pid; })[0]; if (pr.stock !== null && need[pid] > pr.stock) return err('Stok "' + pr.name + '" tersisa ' + pr.stock + '.'); }
     var mine = sigOf(lines);
@@ -1616,6 +1842,7 @@ var Demo = (function () {
     } else if (m === 'scheduled') {
       var sc = Dl.scheduled, z = sc.zones.filter(function (x) { return x.name === d.zone; })[0], sl = sc.slots.filter(function (x) { return x.name === d.slot; })[0];
       if (!sc.enabled || !z || !sl) return err('Pilih rute dan sesi antar.'); if (!d.address) return err('Isi alamat pengiriman.');
+      if (isCat && d.date < addDays(todayWIB(), 1)) return err('Antar katering minimal H-1. Pilih tanggal mulai besok.');
       if (now >= cutoffAt(d.date, sl)) return err('Batas pesan untuk ' + sl.name + ' sudah lewat. Pilih sesi atau tanggal lain.');
       if (nz(sl.capacity) > 0 && (usage()[d.date + '|' + sl.name] || 0) >= nz(sl.capacity)) return err(sl.name + ' sudah penuh. Pilih sesi lain.');
       method = sc.label; zone = z.name; slot = sl.name; date = d.date; ship = (nz(sc.freeFrom) > 0 && sub >= nz(sc.freeFrom)) ? 0 : nz(z.fee);
@@ -1629,7 +1856,7 @@ var Demo = (function () {
     var margin = lineMargin - discount + (m === 'scheduled' ? ship - nz((S.finance || {}).courierCost) : 0);
     var day = todayWIB().slice(2).replace(/-/g, ''), pre = 'SK-' + day + '-';
     var seq = D.orders.reduce(function (mx, o) { return o.id.indexOf(pre) === 0 ? Math.max(mx, parseInt(o.id.slice(pre.length), 10) || 0) : mx; }, 0) + 1;
-    var o = { id: pre + ('00' + seq).slice(-3), time: new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }), name: name, wa: wa, method: method, zone: zone, address: d.address || '', maps: d.maps || '', date: date, slot: slot, summary: lines.map(lineText).join('; '), subtotal: sub, discount: discount, voucher: voucher ? voucher.code : '', shipping: ship, total: sub + ship - discount, payment: pay.name, note: d.note || '', status: 'Baru', items: lines, margin: Math.round(margin), key: d.key, ts: now };
+    var o = { id: pre + ('00' + seq).slice(-3), time: new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }), name: name, wa: wa, method: method, zone: zone, address: d.address || '', maps: d.maps || '', date: date, slot: slot, summary: lines.map(lineText).join('; '), subtotal: sub, discount: discount, voucher: voucher ? voucher.code : '', shipping: ship, total: sub + ship - discount, payment: pay.name, note: (cnote + (d.note || '')).slice(0, 500), status: 'Baru', items: lines, margin: Math.round(margin), key: d.key, ts: now };
     D.orders.unshift(o); save(); return { ok: true, order: custOrder(o) };
   }
 
@@ -1660,7 +1887,7 @@ var Demo = (function () {
       var pr = r.product; if (!String(pr.name || '').trim()) return err('Nama produk wajib diisi.');
       if (nz(pr.flashPrice) > 0 && !flashEnd(pr.flashUntil)) return err('Isi tanggal dan jam berakhir flash sale.');
       var cur = D.products.filter(function (x) { return x.id === pr.id; })[0];
-      var rec = { id: pr.id, name: String(pr.name).trim(), cat: String(pr.cat || 'Lainnya').trim(), price: Math.floor(nz(pr.price)), oldPrice: Math.floor(nz(pr.oldPrice)), hpp: Math.round(nz(pr.hpp)), kemas: Math.round(nz(pr.kemas)), stock: (pr.stock === '' || pr.stock == null) ? null : Math.floor(nz(pr.stock)), image: pr.image || '', emoji: pr.emoji || '', desc: pr.desc || '', badge: pr.badge || '', prepText: pr.prepText || '', packText: pr.packText || '', flashPrice: nz(pr.flashPrice) > 0 ? Math.floor(nz(pr.flashPrice)) : 0, flashUntil: nz(pr.flashPrice) > 0 ? pr.flashUntil : '', flashQuota: nz(pr.flashQuota), active: pr.active !== false, order: pr.order ? Math.floor(nz(pr.order)) : (cur ? cur.order : D.products.length + 1) };
+      var rec = { id: pr.id, name: String(pr.name).trim(), cat: String(pr.cat || 'Lainnya').trim(), price: Math.floor(nz(pr.price)), oldPrice: Math.floor(nz(pr.oldPrice)), hpp: Math.round(nz(pr.hpp)), kemas: Math.round(nz(pr.kemas)), stock: (pr.stock === '' || pr.stock == null) ? null : Math.floor(nz(pr.stock)), image: pr.image || '', emoji: pr.emoji || '', desc: pr.desc || '', badge: pr.badge || '', prepText: pr.prepText || '', packText: pr.packText || '', flashPrice: nz(pr.flashPrice) > 0 ? Math.floor(nz(pr.flashPrice)) : 0, flashUntil: nz(pr.flashPrice) > 0 ? pr.flashUntil : '', flashQuota: nz(pr.flashQuota), size: String(pr.size || '').slice(0, 120), tiers: String(pr.tiersText != null ? pr.tiersText : pr.tiers || '').slice(0, 200), minQty: Math.max(0, Math.floor(nz(pr.minQty))), reqList: !!pr.reqList, active: pr.active !== false, order: pr.order ? Math.floor(nz(pr.order)) : (cur ? cur.order : D.products.length + 1) };
       if (cur) Object.assign(cur, rec); else { rec.id = 'P' + ('0' + (D.products.reduce(function (m, x) { return Math.max(m, parseInt(x.id.replace(/\D/g, ''), 10) || 0); }, 0) + 1)).slice(-2); D.products.push(rec); }
       save(); return { ok: true, id: rec.id };
     }
@@ -1690,8 +1917,9 @@ function lineKey(id, prep, pack) { return id + '|' + (prep || '') + '|' + (pack 
 function optFee(list, name) { var o = list.filter(function (x) { return x.name === name; })[0]; return o ? o.fee : 0; }
 function lineUnit(l, p) { return basePrice(p) + optFee(p.prep, l.prep) + optFee(p.packs, l.pack); }
 function cartLines() {
-  var out = [];
-  St.cart.forEach(function (l) { var p = prodById(l.id); if (p) out.push({ l: l, p: p, unit: lineUnit(l, p) }); });
+  var out = [], tot = {};
+  St.cart.forEach(function (l) { tot[l.id] = (tot[l.id] || 0) + l.qty; });
+  St.cart.forEach(function (l) { var p = prodById(l.id); if (p) { var raw = lineUnit(l, p), pct = tierPct(p.tiers, tot[l.id]); out.push({ l: l, p: p, raw: raw, pct: pct, unit: pct ? Math.round(raw * (1 - pct / 100)) : raw }); } });
   return out;
 }
 function cartCount() { return St.cart.reduce(function (s, l) { return s + l.qty; }, 0); }
@@ -1726,6 +1954,11 @@ function loadStore() {
 }
 
 /* ----- kerangka halaman ----- */
+function minQtyErr() {
+  var tot = {}, msg = ''; St.cart.forEach(function (l) { tot[l.id] = (tot[l.id] || 0) + l.qty; });
+  Object.keys(tot).forEach(function (id) { var p = prodById(id); if (!msg && p && nz(p.minQty) > 0 && tot[id] < p.minQty) msg = p.name + ': minimal pesan ' + p.minQty + ' (sekarang ' + tot[id] + ').'; });
+  return msg;
+}
 function hasCatering() { return cartLines().some(function (x) { return /^Katering/.test(x.p.cat || ''); }); }
 function cateringNote(f) { return '[KATERING] Dibutuhkan: ' + f.cdate.split('-').reverse().join('/') + (f.ctime ? ' jam ' + f.ctime : '') + '. '; }
 function isSvc(p) { return /^Katering/.test(p.cat || ''); }
@@ -1820,7 +2053,7 @@ function renderGrid() {
   g.innerHTML = l.map(function (p) {
     var out = stockOf(p) === 0, opts = p.prep.length || p.packs.length;
     var meta = '<span>' + (p.sold > 0 ? 'Terjual ' + p.sold : 'Baru') + '</span><span' + (stockOf(p) <= 5 && !out ? ' class="low"' : '') + '>' + (out ? 'Habis' : stockOf(p) === Infinity ? 'Stok tersedia' : 'Sisa ' + p.stock) + '</span>';
-    return '<article class="card' + (out ? ' out' : '') + '"><button class="open" data-a="open" data-id="' + esc(p.id) + '">' + artHtml(p) + '<span class="cat-l">' + (isSvc(p) ? '<i class="svc-t">JASA</i> ' : '') + esc(p.cat) + '</span><h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p></button>' +
+    return '<article class="card' + (out ? ' out' : '') + '"><button class="open" data-a="open" data-id="' + esc(p.id) + '">' + artHtml(p) + '<span class="cat-l">' + (isSvc(p) ? '<i class="svc-t">JASA</i> ' : '') + esc(p.cat) + '</span><h3>' + esc(p.name) + '</h3>' + (p.size ? '<div class="sz">' + esc(p.size) + '</div>' : '') + '<p>' + esc(p.desc) + '</p>' + ((p.tiers || []).length ? '<div class="tier-chip">Beli banyak hemat sampai ' + p.tiers[p.tiers.length - 1].pct + '%</div>' : '') + '</button>' +
       '<div class="card-foot"><div class="card-row"><div class="pr">' + priceHtml(p) + '</div><button class="btn btn-primary btn-sm" data-a="' + (opts ? 'open' : 'add') + '" data-id="' + esc(p.id) + '"' + (out || !St.S.storeOpen ? ' disabled' : '') + '>' + (opts ? 'Pilih' : '+ Keranjang') + '</button></div><div class="card-meta">' + meta + '</div></div></article>';
   }).join('');
 }
@@ -1846,9 +2079,9 @@ function locationSection() {
 }
 
 /* ----- keranjang ----- */
-function addToCart(id, prep, pack, qty, note) {
+function addToCart(id, prep, pack, qty, note, uniq) {
   var p = prodById(id); if (!p) return;
-  var k = lineKey(id, prep, pack), ln = St.cart.filter(function (l) { return l.key === k; })[0];
+  var k = lineKey(id, prep, pack) + (uniq ? '|' + Date.now() : ''), ln = St.cart.filter(function (l) { return l.key === k; })[0];
   var cap = stockOf(p), have = inCart(id);
   if (have + qty > cap) { toast('Stok ' + p.name + ' tersisa ' + cap + '.', true); qty = Math.max(0, cap - have); if (!qty) return; }
   if (ln) { ln.qty += qty; if (note) ln.note = note; } else St.cart.push({ key: k, id: id, prep: prep || '', pack: pack || '', qty: qty, note: note || '' });
@@ -1858,7 +2091,7 @@ function setQty(k, d) {
   var l = St.cart.filter(function (x) { return x.key === k; })[0]; if (!l) return;
   var p = prodById(l.id), n = l.qty + d;
   if (d > 0 && inCart(l.id) + d > stockOf(p)) { toast('Stok ' + p.name + ' tersisa ' + p.stock + '.', true); return; }
-  if (n < 1) St.cart = St.cart.filter(function (x) { return x !== l; }); else l.qty = Math.min(99, n);
+  if (n < 1) St.cart = St.cart.filter(function (x) { return x !== l; }); else l.qty = Math.min(999, n);
   saveCart(); renderBadge(); renderDrawer();
 }
 
@@ -1899,7 +2132,7 @@ function renderDrawer() {
   if (St.stage === 'cart') {
     h += t.lines.map(function (x) {
       var o = [x.l.prep, x.l.pack].filter(Boolean).join(' | ');
-      return '<div class="line-item"><div class="li-main"><div class="em">' + (imgSrc(x.p.image) ? '<img src="' + esc(x.p.image) + '" alt="">' : esc(x.p.emoji || '🛒')) + '</div><div><b>' + esc(x.p.name) + '</b>' + (o ? '<small>' + esc(o) + '</small>' : '') + (x.l.note ? '<small>Catatan: ' + esc(x.l.note) + '</small>' : '') + '<div class="pr num"><b>' + rp(x.unit) + '</b></div></div></div><div style="text-align:right"><div class="stepper"><button data-a="dec" data-k="' + esc(x.l.key) + '" aria-label="Kurangi">−</button><span>' + x.l.qty + '</span><button data-a="inc" data-k="' + esc(x.l.key) + '" aria-label="Tambah">+</button></div><div class="num" style="font-size:12px;margin-top:4px;font-weight:800">' + rp(x.unit * x.l.qty) + '</div></div></div>';
+      return '<div class="line-item"><div class="li-main"><div class="em">' + (imgSrc(x.p.image) ? '<img src="' + esc(x.p.image) + '" alt="">' : esc(x.p.emoji || '🛒')) + '</div><div><b>' + esc(x.p.name) + '</b>' + (x.pct ? '<small>Diskon beli banyak ' + x.pct + '% (' + rp(x.raw) + ' menjadi ' + rp(x.unit) + ')</small>' : '') + (o ? '<small>' + esc(o) + '</small>' : '') + (x.l.note ? '<small>Catatan: ' + esc(x.l.note) + '</small>' : '') + '<div class="pr num"><b>' + rp(x.unit) + '</b></div></div></div><div style="text-align:right"><div class="stepper"><button data-a="dec" data-k="' + esc(x.l.key) + '" aria-label="Kurangi">−</button><span>' + x.l.qty + '</span><button data-a="inc" data-k="' + esc(x.l.key) + '" aria-label="Tambah">+</button></div><div class="num" style="font-size:12px;margin-top:4px;font-weight:800">' + rp(x.unit * x.l.qty) + '</div></div></div>';
     }).join('');
     var T = S.tebus || {};
     if (T.enabled && (T.items || []).length) {
@@ -1979,16 +2212,29 @@ function openProduct(id) {
   var h = mHead(esc(p.name)) + '<div class="pm-top">' + artHtml(p) + '<div><span class="tag-g">' + esc(p.cat) + '</span><div class="pr" style="margin-top:6px;font-size:18px" id="pm-price">' + priceHtml(p) + '</div><div class="muted" style="font-size:12px">' + (p.sold > 0 ? 'Terjual ' + p.sold + ' · ' : '') + (stockOf(p) === Infinity ? 'Stok tersedia' : 'Sisa ' + p.stock) + '</div></div></div>';
   if (flashLive(p)) h += '<div class="notice" style="margin-top:12px">⚡ Harga flash sale berlaku sampai ' + new Date(p.flash.until).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Pontianak' }) + ' WIB</div>';
   h += '<p style="margin-top:12px;white-space:pre-line">' + esc(p.desc) + '</p>';
-  if (p.prep.length) h += '<div class="box"><h3 class="sub">Pilih potongan</h3>' + p.prep.map(function (o, i) { return '<label class="opt"><input type="radio" name="pm-prep" value="' + esc(o.name) + '"' + (i === 0 ? ' checked' : '') + '><span><b>' + esc(o.name) + '</b><small>' + (o.fee ? '+' + rp(o.fee) : 'Gratis') + '</small></span></label>'; }).join('') + '</div>';
+  if (p.size) h += '<div class="notice" style="margin-top:10px"><b>Ukuran / berat:</b> ' + esc(p.size) + '</div>';
+  if (nz(p.minQty) > 0) h += '<div class="notice" style="margin-top:10px"><b>Minimal pesan:</b> ' + p.minQty + (isSvc(p) ? ' (paling lambat H-1)' : '') + '</div>';
+  if ((p.tiers || []).length) h += '<div class="box"><h3 class="sub">Diskon beli banyak</h3><table class="t"><tbody>' + p.tiers.map(function (t) { return '<tr><td>Beli ' + t.min + ' atau lebih</td><td class="r"><b>hemat ' + t.pct + '%</b></td></tr>'; }).join('') + '</tbody></table></div>';
+  if (p.prep.length) h += '<div class="box"><h3 class="sub">' + (isSvc(p) ? 'Pilih paket menu' : 'Pilih potongan') + '</h3>' + p.prep.map(function (o, i) { return '<label class="opt"><input type="radio" name="pm-prep" value="' + esc(o.name) + '"' + (i === 0 ? ' checked' : '') + '><span><b>' + esc(o.name) + '</b><small>' + (o.fee ? '+' + rp(o.fee) : 'Gratis') + '</small></span></label>'; }).join('') + '</div>';
   if (p.packs.length) h += '<div class="box"><h3 class="sub">Pilih kemasan</h3>' + p.packs.map(function (o, i) { return '<label class="opt"><input type="radio" name="pm-pack" value="' + esc(o.name) + '"' + (i === 0 ? ' checked' : '') + '><span><b>' + esc(o.name) + '</b><small>' + (o.fee ? '+' + rp(o.fee) : 'Gratis') + '</small></span></label>'; }).join('') + '</div>';
-  h += '<div class="field"><label for="pm-note">Catatan (opsional)</label><input id="pm-note" maxlength="200" placeholder="Mis. ikan dipotong 4 bagian"></div>';
+  if (p.reqList) h += '<div class="box"><h3 class="sub">Daftar request Anda</h3><p class="muted" style="margin:0 0 8px;font-size:12.5px">Tulis lauk atau sayur yang diinginkan beserta jumlah porsinya. Harga akhir dikonfirmasi lewat WhatsApp.</p><div id="pm-req">' + reqRow() + reqRow() + reqRow() + '</div><button class="btn btn-ghost btn-sm" data-a="reqadd" style="margin-top:8px">+ Tambah item</button><div class="muted" style="margin-top:8px">Total: <b id="pm-reqtot">0</b> porsi</div></div><div class="field"><label for="pm-note">Catatan tambahan (opsional)</label><input id="pm-note" maxlength="100" placeholder="Mis. tidak pedas, tanpa santan"></div>';
+  else h += '<div class="field"><label for="pm-note">Catatan (opsional)</label><input id="pm-note" maxlength="200" placeholder="Mis. ikan dipotong 4 bagian"></div>';
   var out = stockOf(p) === 0 || !St.S.storeOpen;
-  h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px"><div class="stepper"><button data-a="pmq" data-d="-1" aria-label="Kurangi">−</button><span id="pm-q">1</span><button data-a="pmq" data-d="1" aria-label="Tambah">+</button></div><button class="btn btn-hot" style="flex:1" data-a="pmadd" data-id="' + esc(p.id) + '"' + (out ? ' disabled' : '') + '>' + (out ? 'Tidak tersedia' : 'Tambah ke keranjang') + '</button></div>';
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px">' + (p.reqList ? '<span id="pm-q" hidden>1</span>' : '<div class="stepper"><button data-a="pmq" data-d="-1" aria-label="Kurangi">−</button><span id="pm-q">' + Math.max(1, nz(p.minQty)) + '</span><button data-a="pmq" data-d="1" aria-label="Tambah">+</button></div>') + '<button class="btn btn-hot" style="flex:1" data-a="pmadd" data-id="' + esc(p.id) + '"' + (out ? ' disabled' : '') + '>' + (out ? 'Tidak tersedia' : 'Tambah ke keranjang') + '</button></div>';
   openModal(h);
   pmPrice(p);
 }
+function reqRow() { return '<div class="req-row"><input class="inp" data-r="n" maxlength="60" placeholder="Nama lauk / sayur"><input class="inp" data-r="q" type="number" min="1" max="999" inputmode="numeric" placeholder="Porsi"></div>'; }
+function reqCollect() {
+  var rows = [], tot = 0; document.querySelectorAll('#pm-req .req-row').forEach(function (r) { var n = r.querySelector('[data-r=n]').value.trim(), q = Math.floor(nz(r.querySelector('[data-r=q]').value)); if (n && q > 0) { rows.push(n + ' x ' + q); tot += q; } });
+  return { text: rows.join('; '), tot: tot };
+}
 function pmSel() { var a = document.querySelector('input[name="pm-prep"]:checked'), b = document.querySelector('input[name="pm-pack"]:checked'); return { prep: a ? a.value : '', pack: b ? b.value : '' }; }
-function pmPrice(p) { var s = pmSel(), q = +$('pm-q').textContent || 1, u = basePrice(p) + optFee(p.prep, s.prep) + optFee(p.packs, s.pack), e = $('pm-price'); if (e) e.innerHTML = '<span class="num"><b>' + rp(u) + '</b></span>' + (q > 1 ? ' <span class="muted" style="font-size:12px">x ' + q + ' = ' + rp(u * q) + '</span>' : ''); }
+function pmPrice(p) {
+  var s = pmSel(), rc = p.reqList ? reqCollect() : null, q = rc ? Math.max(1, rc.tot) : (+$('pm-q').textContent || 1), rt = $('pm-reqtot'); if (rt && rc) rt.textContent = rc.tot;
+  var u0 = basePrice(p) + optFee(p.prep, s.prep) + optFee(p.packs, s.pack), pct = tierPct(p.tiers, q), u = pct ? Math.round(u0 * (1 - pct / 100)) : u0, e = $('pm-price');
+  if (e) e.innerHTML = '<span class="num"><b>' + rp(u) + '</b></span>' + (pct ? ' <span class="muted" style="font-size:12px"><s>' + rp(u0) + '</s> hemat ' + pct + '%</span>' : '') + (q > 1 ? ' <span class="muted" style="font-size:12px">x ' + q + ' = ' + rp(u * q) + '</span>' : '');
+}
 
 function openVouchers() {
   var vs = St.S.vouchers || [], h = mHead('Voucher untuk Anda');
@@ -2025,6 +2271,7 @@ function readForm() {
 }
 function validateCheckout(t) {
   var f = St.form, D = St.S.delivery;
+  var mq = minQtyErr(); if (mq) return mq;
   if (!String(f.name || '').trim()) return 'Isi nama Anda.';
   if (normWa(f.wa).length < 9) return 'Isi nomor WhatsApp dengan benar.';
   if (!f.method) return 'Pilih cara menerima pesanan.';
@@ -2048,7 +2295,7 @@ function submitOrder() {
   if (e) { $('f-err').textContent = e; return; }
   if (!St.key) St.key = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   St.busy = true; renderDrawer();
-  var body = { action: 'order', key: St.key, name: f.name.trim(), wa: normWa(f.wa), method: f.method, courier: f.courier || '', zone: f.zone || '', date: f.date || '', slot: f.slot || '', address: (f.address || '').trim(), maps: (f.maps || '').trim(), payment: f.payment, note: ((hasCatering() ? cateringNote(f) : '') + (f.note || '')).trim(), voucher: t.voucher ? t.voucher.code : '', tebus: St.tebusSel.slice(), items: St.cart.map(function (l) { return { id: l.id, prep: l.prep, pack: l.pack, qty: l.qty, note: l.note }; }) };
+  var body = { action: 'order', key: St.key, name: f.name.trim(), wa: normWa(f.wa), method: f.method, courier: f.courier || '', zone: f.zone || '', date: f.date || '', slot: f.slot || '', address: (f.address || '').trim(), maps: (f.maps || '').trim(), payment: f.payment, note: (f.note || '').trim(), cdate: hasCatering() ? (f.cdate || '') : '', ctime: hasCatering() ? (f.ctime || '') : '', voucher: t.voucher ? t.voucher.code : '', tebus: St.tebusSel.slice(), items: St.cart.map(function (l) { return { id: l.id, prep: l.prep, pack: l.pack, qty: l.qty, note: l.note }; }) };
   API.post(body).then(function (r) {
     St.busy = false;
     if (!r.ok) {
@@ -2104,7 +2351,7 @@ function onStoreClick(e) {
     case 'closem': closeModal(); break;
     case 'inc': setQty(el.getAttribute('data-k'), 1); break;
     case 'dec': setQty(el.getAttribute('data-k'), -1); break;
-    case 'toCheckout': St.stage = 'checkout'; if (!St.form.method) { var D = St.S.delivery; St.form.method = D.scheduled.enabled ? 'scheduled' : D.courier.enabled ? 'courier' : 'pickup'; } renderDrawer(); break;
+    case 'toCheckout': var mq = minQtyErr(); if (mq) { toast(mq, true); break; } St.stage = 'checkout'; if (!St.form.method) { var D = St.S.delivery; St.form.method = D.scheduled.enabled ? 'scheduled' : D.courier.enabled ? 'courier' : 'pickup'; } renderDrawer(); break;
     case 'toCart': readForm(); St.stage = 'cart'; renderDrawer(); break;
     case 'submit': submitOrder(); break;
     case 'applyV': readForm(); renderDrawer(); break;
@@ -2114,8 +2361,11 @@ function onStoreClick(e) {
     case 'doTrack': trackNow($('t-id').value, $('t-wa').value); break;
     case 'trackMine': $('t-id').value = id; $('t-wa').value = el.getAttribute('data-wa'); trackNow(id, el.getAttribute('data-wa')); break;
     case 'complain': sendComplaint(); break;
-    case 'pmq': var q = $('pm-q'); q.textContent = Math.max(1, Math.min(99, (+q.textContent || 1) + +el.getAttribute('data-d'))); pmPrice(prodById(document.querySelector('[data-a=pmadd]').getAttribute('data-id'))); break;
-    case 'pmadd': var s = pmSel(); addToCart(id, s.prep, s.pack, +$('pm-q').textContent || 1, $('pm-note').value.trim()); closeModal(); break;
+    case 'pmq': var q = $('pm-q'); q.textContent = Math.max(1, Math.min(999, (+q.textContent || 1) + +el.getAttribute('data-d'))); pmPrice(prodById(document.querySelector('[data-a=pmadd]').getAttribute('data-id'))); break;
+    case 'pmadd': var s = pmSel(), pp = prodById(id);
+      if (pp && pp.reqList) { var rq = reqCollect(); if (!rq.tot) { toast('Isi minimal satu item request beserta jumlah porsinya.', true); break; } var tx = rq.text + ($('pm-note').value.trim() ? '. Catatan: ' + $('pm-note').value.trim() : ''); addToCart(id, s.prep, s.pack, rq.tot, tx.slice(0, 700), true); closeModal(); break; }
+      addToCart(id, s.prep, s.pack, +$('pm-q').textContent || 1, $('pm-note').value.trim()); closeModal(); break;
+    case 'reqadd': $('pm-req').insertAdjacentHTML('beforeend', reqRow()); break;
   }
 }
 function onStoreChange(e) {
@@ -2135,7 +2385,7 @@ function bindStore() {
   document.body.addEventListener('change', function (e) { if (e.target.closest('#modal')) onStoreChange(e); });
   v.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.id === 'q') { St.q = e.target.value; renderGrid(); scrollTo_('katalog'); } });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
-  v.addEventListener('input', function (e) { if (e.target.closest('#drawer') && e.target.hasAttribute('data-f') && e.target.type !== 'radio' && e.target.tagName !== 'SELECT') readForm(); });
+  v.addEventListener('input', function (e) { if (e.target.closest && e.target.closest('#pm-req')) { var pb2 = document.querySelector('[data-a=pmadd]'); if (pb2) pmPrice(prodById(pb2.getAttribute('data-id'))); return; } if (e.target.closest('#drawer') && e.target.hasAttribute('data-f') && e.target.type !== 'radio' && e.target.tagName !== 'SELECT') readForm(); });
 }
 
 /* ===== Panel admin ===== */
@@ -2239,7 +2489,7 @@ function tabProduk() {
 }
 function openProductEditor(id) {
   var p = id ? AD.data.products.filter(function (x) { return x.id === id; })[0] : null;
-  p = p ? clone(p) : { id: '', name: '', cat: '', price: 0, oldPrice: 0, hpp: 0, kemas: 0, stock: null, image: '', emoji: '🛒', desc: '', badge: '', prepText: '', packText: '', flashPrice: 0, flashUntil: '', flashQuota: 0, active: true, order: '' };
+  p = p ? clone(p) : { id: '', name: '', cat: '', price: 0, oldPrice: 0, hpp: 0, kemas: 0, stock: null, image: '', emoji: '🛒', desc: '', badge: '', prepText: '', packText: '', flashPrice: 0, flashUntil: '', flashQuota: 0, size: '', tiersText: '', minQty: 0, reqList: false, active: true, order: '' };
   AD.edit = p;
   var cats = (AD.S.categories || []).map(function (c) { return '<option value="' + esc(c.name) + '">'; }).join('');
   function f(label, k, type, extra) { return '<div class="field"><label for="pe-' + k + '">' + label + '</label><input id="pe-' + k + '" data-pe="' + k + '" type="' + (type || 'text') + '" value="' + esc(p[k] == null ? '' : p[k]) + '" ' + (extra || '') + '></div>'; }
@@ -2248,6 +2498,9 @@ function openProductEditor(id) {
     '<div class="field"><label>Foto produk</label><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="prow" style="padding:0;border:0;background:none"><div class="th" id="pe-th">' + (imgSrc(p.image) ? '<img src="' + esc(p.image) + '" alt="">' : esc(p.emoji)) + '</div></div><input type="file" id="pe-file" accept="image/*"><span id="pe-up" class="hint"></span></div>' + f('atau tempel link foto', 'image', 'text', 'placeholder="https://..."') + '</div>' +
     '<h4 style="margin-top:16px">Harga dan modal</h4><div class="two-f">' + f('Harga jual (Rp)', 'price', 'number', 'min="0" step="500"') + f('Harga coret (Rp, opsional)', 'oldPrice', 'number', 'min="0"') + f('HPP / modal per unit (Rp)', 'hpp', 'number', 'min="0"') + f('Biaya kemas per unit (Rp)', 'kemas', 'number', 'min="0"') + f('Stok (kosong = tak terbatas)', 'stock', 'number', 'min="0"') + f('Urutan tampil', 'order', 'number', 'min="1"') + '</div><div class="calc" id="pe-calc"></div>' +
     '<h4 style="margin-top:16px">Pilihan pelanggan</h4><div class="field"><label for="pe-prepText">Pilihan potongan (satu per baris, tambahan harga di akhir, mis. Fillet +3000)</label><textarea id="pe-prepText" data-pe="prepText" placeholder="Utuh&#10;Potong 4&#10;Fillet +3000">' + esc(p.prepText) + '</textarea></div><div class="field"><label for="pe-packText">Pilihan kemasan (satu per baris)</label><textarea id="pe-packText" data-pe="packText" placeholder="Plastik biasa&#10;Daun pisang +1000">' + esc(p.packText) + '</textarea></div>' +
+    '<h4 style="margin-top:16px">Ukuran, minimal pesan, dan diskon beli banyak</h4>' + f('Ukuran / berat per satuan (tampil di etalase)', 'size', 'text', 'maxlength="120" placeholder="Mis. Nasi 150 g + lauk 100 g + sayur 50 g"') + '<div class="two-f">' + f('Minimal pesan (0 = tanpa minimal)', 'minQty', 'number', 'min="0"') + '</div>' +
+    '<div class="field"><label for="pe-tiersText">Diskon beli banyak (satu per baris: jumlah=persen, mis. 50=5% artinya beli 50 atau lebih hemat 5%)</label><textarea id="pe-tiersText" data-pe="tiersText" placeholder="50=5%&#10;100=10%">' + esc(p.tiersText || '') + '</textarea></div>' +
+    '<label class="ck" style="display:flex;gap:8px;margin-top:8px;font-weight:700"><input type="checkbox" id="pe-reqList" ' + (p.reqList ? 'checked' : '') + '> Produk request: pelanggan mengisi daftar item dan jumlah porsi</label>' +
     '<h4 style="margin-top:16px">Flash sale (opsional)</h4><div class="two-f">' + f('Harga flash (Rp, 0 = nonaktif)', 'flashPrice', 'number', 'min="0"') + '<div class="field"><label for="pe-flashUntil">Berakhir (WIB)</label><input id="pe-flashUntil" data-pe="flashUntil" type="datetime-local" value="' + esc(p.flashUntil) + '"></div>' + f('Kuota flash', 'flashQuota', 'number', 'min="0"') + '</div>' +
     '<label class="ck" style="display:flex;gap:8px;margin-top:14px;font-weight:700"><input type="checkbox" id="pe-active" ' + (p.active ? 'checked' : '') + '> Tampilkan di toko</label><div id="pe-err" class="err"></div>' +
     '<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><button class="btn btn-primary" data-a="pSave">Simpan produk</button>' + (p.id ? '<button class="btn btn-danger" data-a="pDel">Hapus</button>' : '') + '<button class="btn btn-ghost" data-a="closem">Batal</button></div>';
@@ -2256,7 +2509,7 @@ function openProductEditor(id) {
 function peRead() {
   var p = AD.edit;
   document.querySelectorAll('[data-pe]').forEach(function (e) { p[e.getAttribute('data-pe')] = e.value; });
-  p.active = $('pe-active').checked; return p;
+  p.active = $('pe-active').checked; p.reqList = $('pe-reqList').checked; return p;
 }
 function peCalc() {
   var p = peRead(), m = marginOf(nz(p.price), nz(p.hpp), nz(p.kemas)), tg = nz(AD.S.finance.targetMargin, 25), cost = nz(p.hpp) + nz(p.kemas);

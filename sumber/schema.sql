@@ -6,6 +6,7 @@ create table if not exists public.products (
   image text not null default '', emoji text not null default '', descr text not null default '', badge text not null default '',
   prep_text text not null default '', pack_text text not null default '',
   flash_price integer not null default 0, flash_until text not null default '', flash_quota integer not null default 0,
+  size text not null default '', tiers text not null default '', min_qty integer not null default 0, req_list boolean not null default false,
   active boolean not null default true, sort integer not null default 999,
   updated_at timestamptz not null default now()
 );

@@ -99,7 +99,7 @@ function tabProduk() {
 }
 function openProductEditor(id) {
   var p = id ? AD.data.products.filter(function (x) { return x.id === id; })[0] : null;
-  p = p ? clone(p) : { id: '', name: '', cat: '', price: 0, oldPrice: 0, hpp: 0, kemas: 0, stock: null, image: '', emoji: '🛒', desc: '', badge: '', prepText: '', packText: '', flashPrice: 0, flashUntil: '', flashQuota: 0, active: true, order: '' };
+  p = p ? clone(p) : { id: '', name: '', cat: '', price: 0, oldPrice: 0, hpp: 0, kemas: 0, stock: null, image: '', emoji: '🛒', desc: '', badge: '', prepText: '', packText: '', flashPrice: 0, flashUntil: '', flashQuota: 0, size: '', tiersText: '', minQty: 0, reqList: false, active: true, order: '' };
   AD.edit = p;
   var cats = (AD.S.categories || []).map(function (c) { return '<option value="' + esc(c.name) + '">'; }).join('');
   function f(label, k, type, extra) { return '<div class="field"><label for="pe-' + k + '">' + label + '</label><input id="pe-' + k + '" data-pe="' + k + '" type="' + (type || 'text') + '" value="' + esc(p[k] == null ? '' : p[k]) + '" ' + (extra || '') + '></div>'; }
@@ -108,6 +108,9 @@ function openProductEditor(id) {
     '<div class="field"><label>Foto produk</label><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="prow" style="padding:0;border:0;background:none"><div class="th" id="pe-th">' + (imgSrc(p.image) ? '<img src="' + esc(p.image) + '" alt="">' : esc(p.emoji)) + '</div></div><input type="file" id="pe-file" accept="image/*"><span id="pe-up" class="hint"></span></div>' + f('atau tempel link foto', 'image', 'text', 'placeholder="https://..."') + '</div>' +
     '<h4 style="margin-top:16px">Harga dan modal</h4><div class="two-f">' + f('Harga jual (Rp)', 'price', 'number', 'min="0" step="500"') + f('Harga coret (Rp, opsional)', 'oldPrice', 'number', 'min="0"') + f('HPP / modal per unit (Rp)', 'hpp', 'number', 'min="0"') + f('Biaya kemas per unit (Rp)', 'kemas', 'number', 'min="0"') + f('Stok (kosong = tak terbatas)', 'stock', 'number', 'min="0"') + f('Urutan tampil', 'order', 'number', 'min="1"') + '</div><div class="calc" id="pe-calc"></div>' +
     '<h4 style="margin-top:16px">Pilihan pelanggan</h4><div class="field"><label for="pe-prepText">Pilihan potongan (satu per baris, tambahan harga di akhir, mis. Fillet +3000)</label><textarea id="pe-prepText" data-pe="prepText" placeholder="Utuh&#10;Potong 4&#10;Fillet +3000">' + esc(p.prepText) + '</textarea></div><div class="field"><label for="pe-packText">Pilihan kemasan (satu per baris)</label><textarea id="pe-packText" data-pe="packText" placeholder="Plastik biasa&#10;Daun pisang +1000">' + esc(p.packText) + '</textarea></div>' +
+    '<h4 style="margin-top:16px">Ukuran, minimal pesan, dan diskon beli banyak</h4>' + f('Ukuran / berat per satuan (tampil di etalase)', 'size', 'text', 'maxlength="120" placeholder="Mis. Nasi 150 g + lauk 100 g + sayur 50 g"') + '<div class="two-f">' + f('Minimal pesan (0 = tanpa minimal)', 'minQty', 'number', 'min="0"') + '</div>' +
+    '<div class="field"><label for="pe-tiersText">Diskon beli banyak (satu per baris: jumlah=persen, mis. 50=5% artinya beli 50 atau lebih hemat 5%)</label><textarea id="pe-tiersText" data-pe="tiersText" placeholder="50=5%&#10;100=10%">' + esc(p.tiersText || '') + '</textarea></div>' +
+    '<label class="ck" style="display:flex;gap:8px;margin-top:8px;font-weight:700"><input type="checkbox" id="pe-reqList" ' + (p.reqList ? 'checked' : '') + '> Produk request: pelanggan mengisi daftar item dan jumlah porsi</label>' +
     '<h4 style="margin-top:16px">Flash sale (opsional)</h4><div class="two-f">' + f('Harga flash (Rp, 0 = nonaktif)', 'flashPrice', 'number', 'min="0"') + '<div class="field"><label for="pe-flashUntil">Berakhir (WIB)</label><input id="pe-flashUntil" data-pe="flashUntil" type="datetime-local" value="' + esc(p.flashUntil) + '"></div>' + f('Kuota flash', 'flashQuota', 'number', 'min="0"') + '</div>' +
     '<label class="ck" style="display:flex;gap:8px;margin-top:14px;font-weight:700"><input type="checkbox" id="pe-active" ' + (p.active ? 'checked' : '') + '> Tampilkan di toko</label><div id="pe-err" class="err"></div>' +
     '<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><button class="btn btn-primary" data-a="pSave">Simpan produk</button>' + (p.id ? '<button class="btn btn-danger" data-a="pDel">Hapus</button>' : '') + '<button class="btn btn-ghost" data-a="closem">Batal</button></div>';
@@ -116,7 +119,7 @@ function openProductEditor(id) {
 function peRead() {
   var p = AD.edit;
   document.querySelectorAll('[data-pe]').forEach(function (e) { p[e.getAttribute('data-pe')] = e.value; });
-  p.active = $('pe-active').checked; return p;
+  p.active = $('pe-active').checked; p.reqList = $('pe-reqList').checked; return p;
 }
 function peCalc() {
   var p = peRead(), m = marginOf(nz(p.price), nz(p.hpp), nz(p.kemas)), tg = nz(AD.S.finance.targetMargin, 25), cost = nz(p.hpp) + nz(p.kemas);
